@@ -1,0 +1,90 @@
+&sim_params
+ t0          = 0.0E0        ! Initial time [years]
+,tstop       = 1.0E5        ! Final time [years]
+,dt          = 0.5E0        ! Time step [years]
+,dtout       = 1.0E3        ! Time interval between outputs [years]
+,dtdump      = 1.0E3        ! Time interval between dumps [years]
+,outfile     = "xdr.dat"    ! binary output filename
+,outtype     = "XDR"        ! Output format ["REAL" | "XDR"]
+,fopenstat   = "UNKNOWN"    ! Output status ["NEW" | "UNKNOWN" | "APPEND"]
+,lenergy     = T            ! Flag to compute the system's energy and angular momentum [T | F]
+,ljacobi     = F            ! Flag to compute the system's Jacobi integral [T | F]
+/
+
+&stellar_params
+ loblate     = F            ! Flag to include the J2 and J4 stellar oblateness terms [T | F]
+,j2          = 0.0          ! Stellar J2 oblateness term
+,j4          = 0.0          ! Stellar J4 oblateness term
+,lclose      = T            ! Flag to check for planetary close encounters and remove particles w.r.t. the central body [T | F]
+,rmin        = 3.0E0        ! Remove particle if r < rmin  [AU] (Too close to the central body, set rmin < 0 to ignore)
+,rmax        = 1.0E3        ! Remove particle if r > rmax  [AU] (Too distant from the central body, set rmax < 0, to ignore)
+,rmaxu       = 1.0E3        ! Remove particle if r > rmaxu [AU] (Particle energetically unbound, set rmaxu < 0, to ignore)
+,qmin        = -1.0         ! Remove particle if q < qmin  [AU] (Pericenter too close to the central body, set qmin < 0, to ignore)
+/
+
+&symba_params mtiny = 0.1 / ! Smallest mass to self-gravitate [M_Earth]
+
+&pl_params
+ npl         = 1            ! Number of embryos
+,rhopl       = 1.0          ! Embryo mass density [g/cm^3]
+,mpl         = 0.25         ! Embryo mass [M_Earth]
+,apl         = 10.0         ! Embryo semimajor axis [AU]
+,epl         = 0.0          ! Embryo eccentricity
+,wpl         = 46.0         ! Embryo longitude of pericentre [degrees]
+,ipl         = 0.0          ! Embryo inclination [degrees]
+,opl         = 72.0         ! Embryo longitude of ascending node [degrees]
+,mapl        = 56.0         ! Embryo mean anomaly [degrees]
+/
+
+&model_params
+ ms_model    = "CONSTANT"   ! Planetesimal radius model ["CONSTANT" | "POWER"]
+,ei_model    = "RAYLEIGH"   ! Planetesimal eccentricity and inclination model ["CONSTANT" | "POWER" | "RAYLEIGH"]
+,lplsml      = T            ! Flag to include planetesimals [T | F]
+,lgas        = T            ! Flag to include aerodynamic and Type-I gas drag [T | F]
+,lshear      = F            ! Flag to ensure planetesimals are in the shear-dominated regime [T | F]
+/
+
+&aplsml_params
+ amin        = 8.0          ! Planetesimal minimum semimajor axis [AU]
+,amax        = 12.0         ! Planetesimal maximum semimajor axis [AU]
+,apower      = 1.5          ! Planetesimal surface number density power-law exponent
+/
+
+&msplsml_params
+ smin        = -1.0         ! Planetesimal minimum radius [km]
+,smax        = -1.0         ! Planetesimal maximum radius [km]
+,spower      = -1.0         ! Planetesimal radius power-law exponent
+,sigma0      = 10.0         ! Solid material surface density [g/cm^2] at 1 AU
+,asnow       = 2.7          ! Snow line distance [AU]
+,fsnow       = 4.2          ! Solid material enhancement beyond the snow line
+,rhoplsml    = 0.5          ! Planetesimal mass density [g/cm^3]
+,mratio      = 500.0        ! Ratio of mpl(1) to mplsmls (assuming mpl(1) is the most massive)
+/
+
+&eiplsml_params
+ e0          = -1.0         ! Planetesimal constant eccentricity
+,i0          = -1.0         ! Planetesimal constant inclination [radians]
+,eipower     = -1.0         ! Planetesimal eccentricity and inclination power-law exponent
+,emin        = 0.0          ! Planetesimal minimum eccentricity
+,emax        = 1.0          ! Planetesimal maximum eccentricity
+,imin        = 0.0          ! Planetesimal minimum inclination [radians]
+,imax        = 1.0          ! Planetesimal maximum inclination [radians]
+,rmse        = 0.02         ! Planetesimal RMS eccentricity
+,rmsi        = 0.01         ! Planetesimal RMS inclination [radians]
+/
+
+&gas_params
+ deng0s     = 1.4e-9        ! Gas volume density at 1 AU [g/cm^3], fiducial value: 1.4e-9 (Hayashi MMSN model)
+,gpower     = 2.75          ! Gas density power-law exponent, fiducial value: 2.75 (Hayashi MMSN model)
+,rcomet     = 2.0           ! Comet radius used for aerodynamic drag [km]
+,dcomet     = 0.5           ! Comet density used for aerodynamic drag [g/cm^3]
+,zscale     = 0.05          ! Gas disk scale height [AU] at 1 AU, fiducial value: 0.047 (Hayashi MMSN model)
+,rgi        = 7.0           ! Gas disk inner edge distance [AU]
+,rgf        = 13.0          ! Gas disk outer edge distance [AU]
+,tgdecay    = 1.0e29        ! Gas disk decay time [years]
+,ca         = 1.0           ! Semimajor axis Type-I drag efficiency, typically: 1.0
+,ce         = 1.0           ! Eccentricity Type-I drag efficiency, typically: 1.0
+,ngap       = 0             ! Number of gaps in the gas disk
+,igap       = 2             ! Particle ID(s) that are situated in a gap
+,fwgap      = 0.05          ! Fractional width of the gap
+/

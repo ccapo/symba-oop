@@ -1,0 +1,7 @@
+F77CMD = /usr/bin/ifort
+64_BIT_REALS = -real-size 64
+#CCCMD  = /usr/bin/icc
+CCCMD  = /usr/bin/gcc
+F77OPTS =
+#CCOPTS = -w -fno-pic
+CCOPTS = -w -m64

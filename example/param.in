@@ -1,0 +1,45 @@
+&sim_params
+ t0          = 0.0E+00      ! Initial time (years)
+,tstop       = 5.0E+01      ! Final time (years)
+,dt          = 3.90625E-03  ! Time step (years)
+,dtout       = 1.0E+01      ! Time interval between outputs (years)
+,dtdump      = 1.0E+01      ! Time interval between dumps (years)
+,outfile     = xdr.dat      ! Binary output filename
+,outtype     = FXDR8        ! Output file format [ REAL4 | REAL8 | FXDR4 | FXDR8 ]
+,outform     = EL           ! Output form [ EL | XV ]
+,outstat     = UNKNOWN      ! Output status [ NEW | UNKNOWN | APPEND ]
+,lenergy     = T            ! Flag to compute the system's energy and angular momentum [ T | F ]
+/
+
+&stellar_params
+ loblate     = F            ! Flag to include the J2 and J4 stellar oblateness terms [ T | F ]
+,j2          = 0.0E+00      ! Stellar J2 oblateness term
+,j4          = 0.0E+00      ! Stellar J4 oblateness term
+,lclose      = T            ! Flag to check for planetary close encounters [ T | F ]
+,rmin        = 1.0E-01      ! Remove particle if r < rmin  (AU) (Too close to star, set rmin < 0 to ignore)
+,rmax        = 1.0E+03      ! Remove particle if r > rmax  (AU) (Too distant from star, set rmax < 0 to ignore)
+,rmaxu       = 1.0E+03      ! Remove particle if r > rmaxu (AU) (Particle unbound, set rmaxu < 0 to ignore)
+,qmin        = -1.0         ! Remove particle if q < qmin  (AU) (q too close to star, set qmin < 0 to ignore)
+/
+
+&symba_params
+mtiny = 0.1                 ! Smallest mass to self-gravitate (M_Earth)
+/
+
+&gas_params
+ lgas        = T            ! Flag to include aerodynamic and Type-I gas drag [ T | F ]
+,rhogas0     = 1.40E-09     ! Gas volume density at 1 AU (g/cm^3), fiducial: 1.4e-9 (Hayashi MMSN)
+,gpower      = 2.75E+00     ! Gas density power-law exponent, fiducial: 2.75 (Hayashi MMSN)
+,zscale      = 0.05E+00     ! Gas disk scale height (AU) at 1 AU, fiducial: 0.047 (Hayashi MMSN)
+,rgi         = 1.0E-01      ! Gas disk inner edge distance (AU)
+,rgf         = 1.0E+03      ! Gas disk outer edge distance (AU)
+,taugas      = 1.0E+29      ! Gas disk decay time (years)
+,ca          = 1.0E-29      ! Semimajor axis Type-I drag efficiency, typically: 1.0
+,ce          = 1.0E-29      ! Eccentricity Type-I drag efficiency, typically: 1.0
+/
+
+&gap_params
+ ngap        = 0            ! Number of gaps in the gas disk
+,igap        = 2            ! Particle ID(s) that are situated in a gap (use comma seperated list)
+,fwgap       = 0.05E+00     ! Fractional width of the gap (use comma seperated list)
+/

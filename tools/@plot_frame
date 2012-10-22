@@ -1,0 +1,65 @@
+#!/bin/tcsh
+#
+# To plot say the first frame
+# plot_data frame time amin amax mpl fg fs rdrag
+# type "./@plot_frame 0001 0.0000E+00 8.0 12.0 1.0 1.0 1.0 1.0"
+echo 'Frame # '$1
+/usr/bin/gnuplot -persist << EOS
+
+set terminal postscript portrait enhanced color defaultplex "Helvetica" 12
+set output 'tmp.ps'
+
+set size 0.95,0.27
+set rmargin 0.05
+set lmargin 0.05
+set tmargin 0.05
+set bmargin 0.05
+set multiplot
+
+set origin 0.05,0.72
+set title "A $5 M_{Earth} Embryo, with f_g = $6, f_s = $7 and R_{drag} = $8 km"
+set label "Time = $2 years" at graph 0.7, 0.9
+set xlabel "a (AU)"
+set ylabel "Mass (M_{Earth})"
+set xrange [ $3 : $4 ]
+set yrange [ 1.0e-05 : 1.0e+02 ]
+set logscale y
+set grid
+plot 'plsml.dat' using 3:2 notitle with dots lw 2 lt 1, 'embryo.dat' using 3:2 notitle with dots lw 16 lt 3
+
+set origin 0.05,0.37
+unset title
+unset label
+set xlabel "a (AU)"
+set ylabel "e"
+set yrange [ 1.0e-7 : 1.0 ]
+set logscale y
+set grid
+plot 'plsml.dat' using 3:4 notitle with dots lw 2 lt 1, 'embryo.dat' using 3:4 notitle with dots lw 16 lt 3
+
+set origin 0.05,0.03
+unset title
+unset label
+set xlabel "a (AU)"
+set ylabel "I (radians)"
+set yrange [ 1.0e-8 : pi ]
+set logscale y
+set grid
+plot 'plsml.dat' using 3:5 notitle with dots lw 2 lt 1, 'embryo.dat' using 3:5 notitle with dots lw 16 lt 3
+
+EOS
+
+sed 's|\%\%BoundingBox: 50 50 528 244|\%\%BoundingBox: 0 20 580 800|' < tmp.ps > frame_$1.ps
+if(`uname -s` == 'Linux') then
+  ps2pdf frame_$1.ps
+  convert frame_$1.pdf frame_$1.png
+  rm tmp.ps frame_$1.ps frame_$1.pdf
+else if(`uname -s` == 'Darwin') then
+  convert frame_$1.ps frame_$1.png
+  rm tmp.ps frame_$1.ps
+else
+  echo "Unrecognized Operating System!"
+endif
+
+#
+

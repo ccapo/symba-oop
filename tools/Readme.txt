@@ -1,0 +1,97 @@
+Version: April 20, 2008
+
+To generate a run using a size distribution for gas drag:
+
+1) Compile or soft link to executables in ~/Desktop/SWIFTB/tools called 
+"drag_size_gen"  and "gen_ray_size".
+
+2) Create or edit a file called "drag_size_gen.in"  
+
+In the example appended below, the inner and outer bins for the radius have 
+been set so the 4 size bins correspond to radii of 1 2 4 and 8 km.  
+The differential size distn dN/dr is prop to r^-3, total mass desired is 
+8 Earth masses and we want 2000 superplanetesimals per bin, so 8000 in all.
+Since we expect different size populations to have different mean eccentricities and inclinations (and possibly different densities) we read those in for each bin as well for use by the next program.
+
+**********************drag_size_gen.in**************
+
+0.707107 11.3137 3.    rpl1(km),rplk(km),differential index q
+4 8.0        Number of size bins, Mtot(Earth masses)
+1 2000 0.5 0.012 0.006         i,nplk,rho(g/cc),rmse,rmsi  
+2 2000 0.5 0.022 0.011         i,nplk,rho(g/cc),rmse,rmsi  
+3 2000 0.5 0.032 0.016         i,nplk,rho(g/cc),rmse,rmsi  
+4 2000 0.5 0.042 0.021         i,nplk,rho(g/cc),rmse,rmsi  
+
+****************************************************
+
+Running the above example using "./drag_size_gen < drag_size_gen.in"
+generates a file called "size.dat" which is needed by the next code.  
+The example above creates the following
+file 'size.dat":
+
+***********************size.dat*************************
+    4
+   1  2000  2.667E-04  5.000E-01  1.000E+00  1.200E-02  6.000E-03
+   2  2000  5.333E-04  5.000E-01  2.000E+00  2.200E-02  1.100E-02
+   3  2000  1.067E-03  5.000E-01  4.000E+00  3.200E-02  1.600E-02
+   4  2000  2.133E-03  5.000E-01  8.000E+00  4.200E-02  2.100E-02
+*******************************************************
+
+The first line above is number of bins.  
+Each line then has:
+bin #, # of superplanetesimals per bin, the mass of each splsml in Earth masses,
+the true physical density (g/cc) of a real plsml in that bin, 
+the drag radius (km) to be assumed for a splsml in that bin and rmse and rmsi 
+for splsmls in that bin.
+
+3) Now create or edit file called "gen_ray_size.in"
+Its contents are as follows and will be familiar. The first 3 entries specify
+the spatial distibution of splsmls, and the last ones are used to generate
+the planet orbital elements.  The details for the splsmls are read in from
+'size.dat' and all of the particle load comes out as a 'pl.in' file which 
+is identical in form to other 'pl.in' files used by SYMBA5. 
+
+*************************** gen_ray_size.in **********************************
+
+4. 6. 1.5	! amin (AU), amax (AU), surface density power law
+-563981		! iseed
+1 1.0				! Big guys: nbig, rho(g/cm^3)
+1.d0 5.0 2.e-6 1.e-6 0. 0.0 0.0 ! m (M_Earth), a (AU), e, i (deg), OM (deg), om (deg), M (deg)
+
+**************************************************************
+
+The only difference for this code is that "./gen_ray_size < gen_ray_size.in"
+needs the file "size.dat" to provide splsml drag data and also generates a 
+file called "dragradius.dat" containing, for each splsml: 
+its particle number, drag radus bin number, 
+and phyical radius (in km). Thus
+
+*********************  dragradius.dat **********************
+
+     3     1   1.000E+00
+     4     1   1.000E+00
+     5     1   1.000E+00
+.....
+.....
+.....
+  8000     4   8.000E+00
+  8001     4   8.000E+00
+  8002     4   8.000E+00
+
+************************************************************
+
+As of April 20, 2008 I haven't implemented the changes to SyMBA to utilize
+the new approach.  I believe, starting from SWIFT_SYMBA5_GAS2.F we only need to:
+
+i) include a common block which is loaded up with values for drag radius bin
+and drag radius for each splsml within "drag_kick" first time it is called.
+
+ii) alter "a_drag" to compute separate values of 'dragc' and 'knudsen' depending
+on the bin number of the particle (or perhaps more simply by just using its
+drag radius passed in when a_drag is called).
+
+ii) carefully manage how to update the drag radius array in "drag_kick" 
+whenever a particle merger or removal occurs.  I believe that is done easily 
+in "drag_mass_reorder5".  Perhaps we'll want to output the drag_radius array 
+for time to time (maybe as a new "dump" file?).
+ 

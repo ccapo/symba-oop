@@ -1,0 +1,5 @@
+0.1 10.0 3.5          ! rdragmin (km), rdragmax (km), differential index q
+3 3.0E+00             ! Number of size bins, Mtotal (M_Earth) <== Use tools_disk_mass to compute
+1 3000 0.5 0.01 0.005 ! k, ndrag, rho (g/cm^3), rms_e, rms_i
+2 3000 0.5 0.02 0.010 ! k, ndrag, rho (g/cm^3), rms_e, rms_i
+3 3000 0.5 0.03 0.015 ! k, ndrag, rho (g/cm^3), rms_e, rms_i

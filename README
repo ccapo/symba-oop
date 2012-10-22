@@ -1,0 +1,12 @@
+This is a numerical integrator used for accurately computing the orbits
+of celestial bodies. The code computes the mutual gravity between M large
+massive bodies and N small massive bodies, but does not compute the mutual
+gravity between the N small massive bodies.
+
+This code also includes a prescription for aerodynamic gas drag for the small
+bodies, and tidal torques for the large bodies assuming the presence of a
+circumstellar gaseous disk.
+
+This code makes use of the object oriented paradigm, and has also been
+parallelized using OpenMP directives, but is only designed to handle scenarios
+where the number of large massive bodies are less than 1000.

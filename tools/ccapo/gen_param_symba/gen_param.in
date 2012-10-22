@@ -1,0 +1,70 @@
+&stellar_params
+ loblate     = F            ! Flag to include the J2 and J4 stellar oblateness terms [ T | F ]
+,j2          = 0.0          ! Stellar J2 oblateness term
+,j4          = 0.0          ! Stellar J4 oblateness term
+/
+
+&symba_params
+mtiny = 0.1                 ! Smallest mass to self-gravitate (M_Earth)
+/
+
+&pl_params
+ npl         = 4                      ! Number of embryos
+,rhopl       = 1.0                    ! Embryo mass density (g/cm^3)
+,mpl         = 1.0, 1.0, 1.0, 1.0     ! Embryo mass (M_Earth)
+,apl         = 50.0, 61.0, 72.0, 83.0 ! Embryo semimajor axis (AU)
+,epl         = 0.0, 0.0, 0.0, 0.0     ! Embryo eccentricity
+,wpl         = 0.0, 0.0, 0.0, 0.0     ! Embryo longitude of pericentre (degrees)
+,ipl         = 0.0, 0.0, 0.0, 0.0     ! Embryo inclination (degrees)
+,opl         = 0.0, 0.0, 0.0, 0.0     ! Embryo longitude of ascending node (degrees)
+,mapl        = 0.0, 0.0, 0.0, 0.0     ! Embryo mean anomaly (degrees)
+/
+
+&model_params
+ ms_model    = CONSTANT     ! Planetesimal radius model [ CONSTANT | POWER ]
+,ei_model    = RAYLEIGH     ! Planetesimal eccentricity and inclination model [ CONSTANT | POWER | RAYLEIGH ]
+,lplsml      = T            ! Flag to include planetesimals [ T | F ]
+,lgas        = T            ! Flag to include aerodynamic and Type-I gas drag [ T | F ]
+,lshear      = T            ! Flag to ensure planetesimals are in the shear-dominated regime [ T | F ]
+/
+
+&aplsml_params
+ amin        = 9.30E+00     ! Planetesimal minimum semimajor axis (AU)
+,amax        = 1.07E+01     ! Planetesimal maximum semimajor axis (AU)
+,apower      = 1.0          ! Planetesimal surface number density power-law exponent
+/
+
+&msplsml_params
+ smin        = 1.00E-01     ! Planetesimal minimum radius (km)
+,smax        = 1.00E+03     ! Planetesimal maximum radius (km)
+,spower      = 2.00E+00     ! Planetesimal radius power-law exponent
+,sigma0      = 7.00E+00     ! Solid surface density at 1 AU (g/cm^2), fiducial: 7.0 (Hayashi MMSN)
+,asnow       = 2.7          ! Snow line distance (AU)
+,fsnow       = 4.2          ! Solid material enhancement beyond the snow line
+,rhoplsml    = 0.5          ! Planetesimal mass density (g/cm^3)
+,mratio      = 1.0E+03      ! Ratio of mpl(1) to mplsmls (assuming mpl(1) is the most massive)
+/
+
+&eiplsml_params
+ e0          = -1.0         ! Planetesimal constant eccentricity
+,i0          = -1.0         ! Planetesimal constant inclination (radians)
+,eipower     = -1.0         ! Planetesimal eccentricity and inclination power-law exponent
+,emin        = 0.0          ! Planetesimal minimum eccentricity
+,emax        = 1.0          ! Planetesimal maximum eccentricity
+,imin        = 0.0          ! Planetesimal minimum inclination (radians)
+,imax        = 1.570796     ! Planetesimal maximum inclination (radians)
+,rmse        = 0.02         ! Planetesimal RMS eccentricity
+,rmsi        = 0.01         ! Planetesimal RMS inclination (radians)
+/
+
+&drag_params
+ rmin = 0.1                               ! Min. drag radius (km)
+,rmax = 10.0                              ! Max. drag radius (km)
+,q    = 3.0                               ! Drag radius power-law exponent
+,nk   = 5                                 ! Number of drag radius bins
+,mtot = 1.0e-29                           ! Planetesimal total mass (Earth Mass)
+,nplk = 200, 200, 200, 200, 200           ! Number of planetesimals for each drag radius bin
+,rho  = 0.5, 0.5, 0.5, 0.5, 0.5           ! Mass density of planetesimals (g/cm^3) for each drag radius bin
+,rmse = 0.01, 0.02, 0.03, 0.04, 0.05      ! RMS eccentricity of planetesimals for each drag radius bin
+,rmsi = 0.005, 0.010, 0.015, 0.020, 0.025 ! RMS inclination (radians) of planetesimals for each drag radius bin
+/

@@ -1,0 +1,32 @@
+res = fltarr(6)
+myr = 1.0e6
+
+tmp = linfit(g20.t,g20.a)
+res[0] = tmp[1]
+tmp = linfit(g25.t,g25.a)
+res[1] = tmp[1]
+
+tmp = linfit(p20.t[10:85],p20.a[10:85])
+res[2] = tmp[1]
+tmp = linfit(p25.t[10:80],p25.a[10:80])
+res[3] = tmp[1]
+
+tmp = linfit(c20.t,c20.a)
+res[4] = tmp[1]
+tmp = linfit(c25.t[10:70],c25.a[10:70])
+res[5] = tmp[1]
+
+res = res*myr ; AU/Myr
+
+setplot,file='shear_migrate.ps'
+plot,c25.t/myr,c25.a,xtit='Time (Myr)',ytit='a (AU)',tit='Migration in the Shear Dominated Regime',yran=[7.5,11.0],/nodata
+oplot,c25.t/myr,c25.a,color=254
+oplot,c20.t/myr,c20.a,color=254,line=2
+oplot,p25.t/myr,p25.a,color=57
+oplot,p20.t/myr,p20.a,color=57,line=2
+oplot,g25.t/myr,g25.a,color=140
+oplot,g20.t/myr,g20.a,color=140,line=2
+legend,['Type I - Only; 0.20 M_Earth; '+strcompress(string(res[0]),/remove_all)+' AU/Myr','Type I - Only; 0.25 M_Earth; '+strcompress(string(res[1]),/remove_all)+' AU/Myr','Plsmls - Only; 0.20 M_Earth; '+strcompress(string(res[2]),/remove_all)+' AU/Myr','Plsmls - Only; 0.25 M_Earth; '+strcompress(string(res[3]),/remove_all)+' AU/Myr','Type I + Plsmls; 0.20 M_Earth; '+strcompress(string(res[4]),/remove_all)+' AU/Myr','Type I + Plsmls; 0.25 M_Earth; '+strcompress(string(res[5]),/remove_all)+' AU/Myr'],line=[2,0,2,0,2,0],color=[140,140,57,57,254,254],/right,box=0
+setplot,/close
+
+delvar,tmp
