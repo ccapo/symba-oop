@@ -26,9 +26,6 @@
 #
 #******************************************************************************
 
-# Determines operating system
-TARGET_OS = $(shell uname -s)
-
 # System utilities
 SHELL           = /bin/tcsh
 INSTALL         = install
@@ -36,7 +33,7 @@ INSTALL_PROGRAM = $(INSTALL) -m 755
 INSTALL_DATA    = $(INSTALL) -m 644
 
 # SWIFT definitions
-SWIFT_HOME      = $(HOME)/projects/swift_v3.0
+SWIFT_HOME      = $(HOME)/symba-oop
 
 # Compiler definitions
 FORTRAN         = ifort
@@ -45,7 +42,7 @@ CC              = gcc
 64_BIT_REALS    = -r8
 
 # These are the definitions specific to Mac OS X
-ifeq ($(TARGET_OS),Darwin)
+ifeq ($(shell uname -s),Darwin)
 
   # System utilities
   AR              = ar
