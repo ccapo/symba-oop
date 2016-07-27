@@ -26,7 +26,7 @@ implicit none
 integer(ik), parameter :: kbinmax = 1000
 
 ! Internal variables
-integer(ik) :: nseed, seed, time(8)
+integer(ik) :: nseed, seed(12), time(8)
 
 integer(ik) :: nbig, nplsml, npl
 integer(ik) :: i, j, iseed, ialpha
@@ -48,8 +48,9 @@ integer(ik) :: k, kk, kbin, kplsml
 ! Random seed based on current date and time
 call random_seed(size = nseed)
 call date_and_time(values = time)
-seed = 79867_ik*sum(abs(time))
-call random_seed(put = (/ seed, seed/13_ik /) )
+seed = 79867_ik*sum(abs(time)) + 37_ik * (/ (k - 1, k = 1, nseed) /)
+!write(*,*) 'seed = ', seed
+call random_seed(put = seed)
 
 ! Start with data for the plsml distn in semimajor axis
 write(*,'(/,a)', advance = 'no') 'For plsml distn, enter amin (AU), amax (AU), power law exponent: '

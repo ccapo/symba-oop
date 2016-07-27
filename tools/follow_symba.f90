@@ -70,27 +70,27 @@ read(7,'(1x,i7,1x,1pe22.15)') nbod, mstar
 close(unit = 7)
 
 ! Print binary format and open binary file
-select case(param.outtype)
+select case(param%outtype)
 
   case("FXDR4")
 
     !write(*,'(a,/)') ' Reading a single precision FXDR binary file'
-    call io_open_fxdr(param.outfile, "R", .TRUE., iu, ierr)
+    call io_open_fxdr(param%outfile, "R", .TRUE., iu, ierr)
 
   case("FXDR8")
 
     !write(*,'(a,/)') ' Reading a double precision FXDR binary file'
-    call io_open_fxdr(param.outfile, "R", .TRUE., iu, ierr)
+    call io_open_fxdr(param%outfile, "R", .TRUE., iu, ierr)
 
   case("REAL4")
 
     !write(*,'(a,/)') ' Reading a single precision binary file'
-    call io_open(iu, param.outfile, "OLD", "UNFORMATTED", ierr)
+    call io_open(iu, param%outfile, "OLD", "UNFORMATTED", ierr)
 
   case("REAL8")
 
     !write(*,'(a,/)') ' Reading a double precision binary file'
-    call io_open(iu, param.outfile, "OLD", "UNFORMATTED", ierr)
+    call io_open(iu, param%outfile, "OLD", "UNFORMATTED", ierr)
 
   case default
 
@@ -106,24 +106,24 @@ write(*,'(/,a)') ' Output format:'
 write(*,'(a)')   ' 1  2   3  4  5    6      7      8     9     10  11  12  '
 write(*,'(a,/)') ' t, id, a, e, inc, capom, omega, capm, peri, apo, M, obar'
 
-tmax = param.t0
+tmax = param%t0
 
 do
 
-  ierr = io_read_hdr(iu, t, nbod, ntp, param.ioutform, param.outtype)
+  ierr = io_read_hdr(iu, t, nbod, ntp, param%ioutform, param%outtype)
   if(ierr /= 0) exit
 
   lfound = .false.
 
   do i = 2, nbod
 
-    if(param.lgas) then
+    if(param%lgas) then
 
-      ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param.outtype, mass = mu, radius = rad)
+      ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param%outtype, mass = mu, radius = rad)
 
     else
 
-      ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param.outtype, mass = mu)
+      ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param%outtype, mass = mu)
 
     end if
 

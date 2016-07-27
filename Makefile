@@ -105,7 +105,7 @@ bin: *.f90
 
 clean:
 	cd $(SWIFT_HOME)/module;      rm -f Makefile.Defines Makefile
-	cd $(SWIFT_HOME)/fxdr;        rm -f Makefile.Defines
+	cd $(SWIFT_HOME)/fxdr;        rm -f Makefile.Defines Makefile.fxdr
 	cd $(SWIFT_HOME)/main;        rm -f Makefile.Defines Makefile
 	cd $(SWIFT_HOME)/tools;       rm -f Makefile.Defines Makefile
 	cd $(SWIFT_HOME)/lib;         rm -f lib*.a

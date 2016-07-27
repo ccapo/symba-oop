@@ -201,19 +201,19 @@ contains
   !-----------------!
 
   rhill(1) = 0.0_rk
-  mstar = pbod(1).mass
+  mstar = pbod(1)%mass
 
   !$OMP PARALLEL DO SCHEDULE(STATIC) PRIVATE(i, mu, r, v2, energy, a) &
   !$OMP FIRSTPRIVATE(mstar) SHARED(nbod, pbod, rhill)
   do i = 2, nbod
 
-    if(pbod(i).mass > 0.0_rk) then
+    if(pbod(i)%mass > 0.0_rk) then
 
-      mu = mstar*pbod(i).mass/(mstar + pbod(i).mass)
-      r = sqrt(sum(pbod(i).r**2))
-      v2 = sum(pbod(i).v**2)
-      energy = -mstar*pbod(i).mass/r + 0.5_rk*mu*v2
-      a = -mstar*pbod(i).mass/(2.0_rk*energy)
+      mu = mstar*pbod(i)%mass/(mstar + pbod(i)%mass)
+      r = sqrt(sum(pbod(i)%r**2))
+      v2 = sum(pbod(i)%v**2)
+      energy = -mstar*pbod(i)%mass/r + 0.5_rk*mu*v2
+      a = -mstar*pbod(i)%mass/(2.0_rk*energy)
       rhill(i) = a*(mu/(3.0_rk*mstar))**(1.0_rk/3.0_rk)
 
     else
@@ -260,11 +260,11 @@ contains
   ! Executable code !
   !-----------------!
 
-  mu = mstar*pbod.mass/(mstar + pbod.mass)
-  r = sqrt(sum(pbod.r**2))
-  v2 = sum(pbod.v**2)
-  energy = -mstar*pbod.mass/r + 0.5_rk*mu*v2
-  a = -mstar*pbod.mass/(2.0_rk*energy)
+  mu = mstar*pbod%mass/(mstar + pbod%mass)
+  r = sqrt(sum(pbod%r**2))
+  v2 = sum(pbod%v**2)
+  energy = -mstar*pbod%mass/r + 0.5_rk*mu*v2
+  a = -mstar*pbod%mass/(2.0_rk*energy)
   rhill = a*(mu/(3.0_rk*mstar))**(1.0_rk/3.0_rk)
 
   return
@@ -310,7 +310,7 @@ contains
   !$OMP PARALLEL DO DEFAULT(NONE) SCHEDULE(STATIC) PRIVATE(i, r2) SHARED(nbod, istart, pbod, ir, ir3)
   do i = istart, nbod
 
-    r2 = sum(pbod(i).r**2)
+    r2 = sum(pbod(i)%r**2)
     ir(i) = 1.0_rk/sqrt(r2)
     ir3(i) = ir(i)/r2
 
@@ -366,7 +366,7 @@ contains
   ! Input:  nbod        ==> Number of bodies
   !         pbod(nbod)  ==> Database entries for bodies (See swift module)
   !
-  ! Output: pbod.iperi  ==> Pericentre status
+  ! Output: pbod%iperi  ==> Pericentre status
   !                         - iperi = -1 if body before perihelion
   !                         - iperi =  0 if body went through perihelion
   !                         - iperi = +1 if body after perihelion
@@ -405,15 +405,15 @@ contains
     !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) PRIVATE(i, vdotr) SHARED(nbod, pbod)
     do i = 2, nbod
 
-      vdotr = dot_product(pbod(i).r, pbod(i).v)
+      vdotr = dot_product(pbod(i)%r, pbod(i)%v)
 
       if(vdotr > 0.0_rk) then
 
-        pbod(i).iperi = 1
+        pbod(i)%iperi = 1
 
       else
 
-        pbod(i).iperi = -1
+        pbod(i)%iperi = -1
 
       end if
 
@@ -424,7 +424,7 @@ contains
 
   else
 
-    mstar = pbod(1).mass
+    mstar = pbod(1)%mass
 
     !$OMP PARALLEL DO SCHEDULE(STATIC) PRIVATE(i, vdotr, gm, ialpha, a, e) &
     !$OMP FIRSTPRIVATE(mstar) SHARED(nbod, pbod, lperi, peri)
@@ -432,20 +432,20 @@ contains
 
       lperi(i) = .false.           ! Initialize perihelion flag
 
-      vdotr = dot_product(pbod(i).r, pbod(i).v)
+      vdotr = dot_product(pbod(i)%r, pbod(i)%v)
 
-      if(pbod(i).iperi == -1) then ! was coming in
+      if(pbod(i)%iperi == -1) then ! was coming in
 
         if(vdotr < 0.0_rk) then    ! still coming in
 
-          pbod(i).iperi = -1
+          pbod(i)%iperi = -1
 
          else                      ! turned around
 
-          pbod(i).iperi = 0
+          pbod(i)%iperi = 0
           lperi(i) = .true.
-          gm = mstar + pbod(i).mass
-          call orbel_xv2aeq(pbod(i).r, pbod(i).v, gm, ialpha, a, e, peri(i))
+          gm = mstar + pbod(i)%mass
+          call orbel_xv2aeq(pbod(i)%r, pbod(i)%v, gm, ialpha, a, e, peri(i))
 
         end if
 
@@ -453,11 +453,11 @@ contains
 
         if(vdotr < 0.0_rk) then    ! coming in
 
-          pbod(i).iperi = -1
+          pbod(i)%iperi = -1
 
         else
 
-          pbod(i).iperi = 1        ! going out
+          pbod(i)%iperi = 1        ! going out
 
         end if
 
@@ -832,7 +832,7 @@ contains
 
   else
 
-    reference = p((left_end + right_end)/2).mass
+    reference = p((left_end + right_end)/2)%mass
     i = left_end - 1; j = right_end + 1
 
     do
@@ -840,14 +840,14 @@ contains
       do
 
         i = i + 1
-        if(p(i).mass <= reference) exit
+        if(p(i)%mass <= reference) exit
 
       end do
 
       do
 
         j = j - 1
-        if(p(j).mass >= reference) exit
+        if(p(j)%mass >= reference) exit
 
       end do
 
@@ -933,7 +933,7 @@ contains
 
     do j = i + 1, right_end
 
-      if(p(j).mass > p(i).mass) call util_swap_body(p(i), p(j))
+      if(p(j)%mass > p(i)%mass) call util_swap_body(p(i), p(j))
 
     end do
 
@@ -1124,9 +1124,9 @@ contains
   !-----------------!
 
   ! This assumes that the particle identifiers are in order of decreasing mass
-  !nbodm = count(pbod(1:nbod - 1).mass > param.mtiny)
+  !nbodm = count(pbod(1:nbod - 1)%mass > param%mtiny)
 
-  if(pbod(nbod).mass > param.mtiny) then
+  if(pbod(nbod)%mass > param%mtiny) then
 
     nbodm = nbod - 1
 
@@ -1141,13 +1141,13 @@ contains
     nbodm = 1
 
     ! Make a private copy of mtiny available for each thread
-    mtiny = param.mtiny
+    mtiny = param%mtiny
 
     !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) PRIVATE(i) &
     !$OMP FIRSTPRIVATE(mtiny) SHARED(nbod, pbod) REDUCTION(MAX : nbodm)
     do i = 2, nbod - 1
 
-      if(pbod(i).mass > mtiny) nbodm = i
+      if(pbod(i)%mass > mtiny) nbodm = i
 
     end do
     !$OMP END PARALLEL DO

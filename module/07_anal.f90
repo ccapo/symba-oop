@@ -70,11 +70,11 @@ contains
   call coord_h2b(param_tmp, nbod, p, msys)
 
   ! Initialize the kinetic, potential and total energy, along with the components of angular momentum
-  ke = 0.5_rk*p(nbod).mass*sum(p(nbod).v**2)
+  ke = 0.5_rk*p(nbod)%mass*sum(p(nbod)%v**2)
   pe = 0.0_rk
-  lx = p(nbod).mass*(p(nbod).r(2)*p(nbod).v(3) - p(nbod).r(3)*p(nbod).v(2))
-  ly = p(nbod).mass*(p(nbod).r(3)*p(nbod).v(1) - p(nbod).r(1)*p(nbod).v(3))
-  lz = p(nbod).mass*(p(nbod).r(1)*p(nbod).v(2) - p(nbod).r(2)*p(nbod).v(1))
+  lx = p(nbod)%mass*(p(nbod)%r(2)*p(nbod)%v(3) - p(nbod)%r(3)*p(nbod)%v(2))
+  ly = p(nbod)%mass*(p(nbod)%r(3)*p(nbod)%v(1) - p(nbod)%r(1)*p(nbod)%v(3))
+  lz = p(nbod)%mass*(p(nbod)%r(1)*p(nbod)%v(2) - p(nbod)%r(2)*p(nbod)%v(1))
 
   ! Initialize the correction factors for the Kahan summation formula
   !kerr = 0.0_rk; perr = 0.0_rk
@@ -85,16 +85,16 @@ contains
   do i = 1, nbodm
 
     ! Angular momentum components
-    lx = lx + p(i).mass*(p(i).r(2)*p(i).v(3) - p(i).r(3)*p(i).v(2))
-    ly = ly + p(i).mass*(p(i).r(3)*p(i).v(1) - p(i).r(1)*p(i).v(3))
-    lz = lz + p(i).mass*(p(i).r(1)*p(i).v(2) - p(i).r(2)*p(i).v(1))
-    !lx = util_kahan_sum(lx, p(i).mass*(p(i).r(2)*p(i).v(3) - p(i).r(3)*p(i).v(2)), lxerr)
-    !ly = util_kahan_sum(ly, p(i).mass*(p(i).r(3)*p(i).v(1) - p(i).r(1)*p(i).v(3)), lyerr)
-    !lz = util_kahan_sum(lz, p(i).mass*(p(i).r(1)*p(i).v(2) - p(i).r(2)*p(i).v(1)), lzerr)
+    lx = lx + p(i)%mass*(p(i)%r(2)*p(i)%v(3) - p(i)%r(3)*p(i)%v(2))
+    ly = ly + p(i)%mass*(p(i)%r(3)*p(i)%v(1) - p(i)%r(1)*p(i)%v(3))
+    lz = lz + p(i)%mass*(p(i)%r(1)*p(i)%v(2) - p(i)%r(2)*p(i)%v(1))
+    !lx = util_kahan_sum(lx, p(i)%mass*(p(i)%r(2)*p(i)%v(3) - p(i)%r(3)*p(i)%v(2)), lxerr)
+    !ly = util_kahan_sum(ly, p(i)%mass*(p(i)%r(3)*p(i)%v(1) - p(i)%r(1)*p(i)%v(3)), lyerr)
+    !lz = util_kahan_sum(lz, p(i)%mass*(p(i)%r(1)*p(i)%v(2) - p(i)%r(2)*p(i)%v(1)), lzerr)
 
     ! Kinetic energy
-    ke = ke + 0.5_rk*p(i).mass*sum(p(i).v**2)
-    !ke = util_kahan_sum(ke, 0.5_rk*p(i).mass*sum(p(i).v**2), kerr)
+    ke = ke + 0.5_rk*p(i)%mass*sum(p(i)%v**2)
+    !ke = util_kahan_sum(ke, 0.5_rk*p(i)%mass*sum(p(i)%v**2), kerr)
 
     ! Make a copy the information for body i available for each thread
     pi = p(i)
@@ -105,12 +105,12 @@ contains
     !FIRSTPRIVATE(i, pi, perr) LASTPRIVATE(perr)
     do j = i + 1, nbod
 
-      if((pi.mass /= 0.0_rk) .and. (p(j).mass /= 0.0_rk)) then
+      if((pi%mass /= 0.0_rk) .and. (p(j)%mass /= 0.0_rk)) then
 
-        dr = p(j).r - pi.r
+        dr = p(j)%r - pi%r
         dr2 = sum(dr**2)
-        pe = pe - (pi.mass*p(j).mass)/sqrt(dr2)
-        !pe = util_kahan_sum(pe, -(pi.mass*p(j).mass)/sqrt(dr2), perr)
+        pe = pe - (pi%mass*p(j)%mass)/sqrt(dr2)
+        !pe = util_kahan_sum(pe, -(pi%mass*p(j)%mass)/sqrt(dr2), perr)
 
       end if
 
@@ -126,16 +126,16 @@ contains
   do i = nbodm + 1, nbod - 1
 
     ! Angular momentum components
-    lx = lx + p(i).mass*(p(i).r(2)*p(i).v(3) - p(i).r(3)*p(i).v(2))
-    ly = ly + p(i).mass*(p(i).r(3)*p(i).v(1) - p(i).r(1)*p(i).v(3))
-    lz = lz + p(i).mass*(p(i).r(1)*p(i).v(2) - p(i).r(2)*p(i).v(1))
-    !lx = util_kahan_sum(lx, p(i).mass*(p(i).r(2)*p(i).v(3) - p(i).r(3)*p(i).v(2)), lxerr)
-    !ly = util_kahan_sum(ly, p(i).mass*(p(i).r(3)*p(i).v(1) - p(i).r(1)*p(i).v(3)), lyerr)
-    !lz = util_kahan_sum(lz, p(i).mass*(p(i).r(1)*p(i).v(2) - p(i).r(2)*p(i).v(1)), lzerr)
+    lx = lx + p(i)%mass*(p(i)%r(2)*p(i)%v(3) - p(i)%r(3)*p(i)%v(2))
+    ly = ly + p(i)%mass*(p(i)%r(3)*p(i)%v(1) - p(i)%r(1)*p(i)%v(3))
+    lz = lz + p(i)%mass*(p(i)%r(1)*p(i)%v(2) - p(i)%r(2)*p(i)%v(1))
+    !lx = util_kahan_sum(lx, p(i)%mass*(p(i)%r(2)*p(i)%v(3) - p(i)%r(3)*p(i)%v(2)), lxerr)
+    !ly = util_kahan_sum(ly, p(i)%mass*(p(i)%r(3)*p(i)%v(1) - p(i)%r(1)*p(i)%v(3)), lyerr)
+    !lz = util_kahan_sum(lz, p(i)%mass*(p(i)%r(1)*p(i)%v(2) - p(i)%r(2)*p(i)%v(1)), lzerr)
 
     ! Kinetic energy
-    ke = ke + 0.5_rk*p(i).mass*sum(p(i).v**2)
-    !ke = util_kahan_sum(ke, 0.5_rk*p(i).mass*sum(p(i).v**2), kerr)
+    ke = ke + 0.5_rk*p(i)%mass*sum(p(i)%v**2)
+    !ke = util_kahan_sum(ke, 0.5_rk*p(i)%mass*sum(p(i)%v**2), kerr)
 
   end do
   !$OMP END PARALLEL DO
@@ -144,7 +144,7 @@ contains
   l = (/ lx, ly, lz /)
 
   ! If oblateness terms are needed, add to the potential
-  if(param.loblate) then
+  if(param%loblate) then
 
     pe_obl = anal_energy_obl(param, nbod, p)
     pe = pe + pe_obl

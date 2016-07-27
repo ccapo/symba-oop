@@ -4,11 +4,11 @@
 ,dt          = 3.90625E-03  ! Time step (years)
 ,dtout       = 1.0E+01      ! Time interval between outputs (years)
 ,dtdump      = 1.0E+01      ! Time interval between dumps (years)
-,outfile     = xdr.dat      ! Binary output filename
-,outtype     = FXDR8        ! Output file format [ REAL4 | REAL8 | FXDR4 | FXDR8 ]
-,outform     = EL           ! Output form [ EL | XV ]
-,outstat     = UNKNOWN      ! Output status [ NEW | UNKNOWN | APPEND ]
-,lenergy     = T            ! Flag to compute the system's energy and angular momentum [ T | F ]
+,outfile     = "bin.dat"    ! Binary output filename
+,outtype     = "REAL8"      ! Output file format [ REAL4 | REAL8 | FXDR4 | FXDR8 ]
+,outform     = "EL"         ! Output form [ EL | XV ]
+,outstat     = "UNKNOWN"    ! Output status [ NEW | UNKNOWN | APPEND ]
+,lenergy     = F            ! Flag to compute the system's energy and angular momentum [ T | F ]
 /
 
 &stellar_params

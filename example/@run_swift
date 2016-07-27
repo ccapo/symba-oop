@@ -13,4 +13,5 @@ rm -f pl.in
 
 ./drag_size_gen < drag_size_gen.in
 ./gen_ray_size < gen_ray_size.in
-./swift_symba5_gas
+time ./swift_symba5_gas
+./follow_symba param.in pl.in 2

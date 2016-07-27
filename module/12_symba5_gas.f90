@@ -122,10 +122,10 @@ contains
   !-----------------!
 
   ! Exponential decay factor
-  exp_factor = exp(-time/param.taugas)
+  exp_factor = exp(-time/param%taugas)
 
   ! Mass of central body
-  mstar = pbod(1).mass
+  mstar = pbod(1)%mass
 
   !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) FIRSTPRIVATE(exp_factor, mstar, dtau, param) &
   !$OMP PRIVATE(j, s, r, z_0, zarg, rhogas, eta, vkep, vfac, vgas, vrel, vrelabs, mach, knudsen, c_d, gdrag, agas) &
@@ -133,11 +133,11 @@ contains
   do j = nbodm + 1, nbod
 
     ! Projected distance in the xy-plane
-    s = sqrt(sum(pbod(j).r(1:2)**2))
+    s = sqrt(sum(pbod(j)%r(1:2)**2))
 
     ! If body j is within the hill sphere of a massive body, or its projected distance
     ! in the xy-plane is outside the gas disk region
-    if(lhill(j) .or. (s < param.rgi) .or. (s > param.rgf)) then
+    if(lhill(j) .or. (s < param%rgi) .or. (s > param%rgf)) then
 
       ! Set the acceleration due to gas drag to zero
       agas = 0.0_rk
@@ -145,42 +145,42 @@ contains
     else
 
       ! Scale height of the gas
-      z_0 = param.zscale*s**1.25_rk ! scale height (Hayashi et al., 1980)
+      z_0 = param%zscale*s**1.25_rk ! scale height (Hayashi et al., 1980)
 
       ! Density follows power law model: s^(-gpower)*exp(-(z/z0)^2)
-      zarg = pbod(j).r(3)/z_0
-      rhogas = param.rhogas0*exp(-zarg**2)*s**(-param.gpower)
+      zarg = pbod(j)%r(3)/z_0
+      rhogas = param%rhogas0*exp(-zarg**2)*s**(-param%gpower)
 
       ! Pressure of gas parameter eta (e.g. Kokubo and Ida)
-      eta = 6.0e-4_rk*(param.gpower + 0.5_rk)*sqrt(s)
+      eta = 6.0e-4_rk*(param%gpower + 0.5_rk)*sqrt(s)
 
       ! Distance and keplerian velocity for body j
-      r = sqrt(sum(pbod(j).r**2))
+      r = sqrt(sum(pbod(j)%r**2))
       vkep = sqrt(mstar/r)
 
       ! Gas moves slower than keplerian velocity
       vfac = vkep*sqrt(1.0_rk - 2.0_rk*eta)            ! Adachi et al., 1976
-      vgas(1) = -vfac*pbod(j).r(2)/s                   ! Brakes vx
-      vgas(2) = vfac*pbod(j).r(1)/s                    ! Brakes vy
+      vgas(1) = -vfac*pbod(j)%r(2)/s                   ! Brakes vx
+      vgas(2) = vfac*pbod(j)%r(1)/s                    ! Brakes vy
       vgas(3) = 0.0_rk                                 ! No braking in vz
 
-      vrel = pbod(j).v - vgas                          ! Relative velocity between body j and gas
+      vrel = pbod(j)%v - vgas                          ! Relative velocity between body j and gas
       vrelabs = sqrt(sum(vrel**2))                     ! Magnitude of relative velocity between body j and gas
 
       mach = 3.32126045_rk*vrelabs*s**0.25_rk          ! Mach number
-      knudsen = 1.1097308e-6_rk/(rhogas*pbod(j).rdrag) ! Knudsen number
+      knudsen = 1.1097308e-6_rk/(rhogas*pbod(j)%rdrag) ! Knudsen number
 
       ! Compute the drag coefficient using the Mach and Knudsen number
       c_d = symba5_gas_drag_coefficient(mach, knudsen)
 
       ! Compute the inverse of aerodynamic gas drag timescale
-      gdrag = 0.844260701751676972_rk*c_d*vrelabs*rhogas*exp_factor/(pbod(j).rdrag*pbod(j).rho)
+      gdrag = 0.844260701751676972_rk*c_d*vrelabs*rhogas*exp_factor/(pbod(j)%rdrag*pbod(j)%rho)
 
       ! Compute the acceleration due to aerodynamic gas drag
       agas = -gdrag*vrel
 
       ! Apply the aerodynamic gas drag acceleration
-      pbod(j).v = pbod(j).v + agas*dtau
+      pbod(j)%v = pbod(j)%v + agas*dtau
 
     end if
 
@@ -228,15 +228,15 @@ contains
   !-----------------!
 
   ! Exponential decay of surface gas density
-  sigma = param.sigma0*exp(-time/param.taugas)
+  sigma = param%sigma0*exp(-time/param%taugas)
 
   do i = 2, nbodm
 
     ! Projected distance squared in the xy-plane
-    s2 = sum(pbod(i).r(1:2)**2)
+    s2 = sum(pbod(i)%r(1:2)**2)
 
     ! If body i is outside the gas disk region
-    if((s2 < param.rgi**2) .or. (s2 > param.rgf**2)) then
+    if((s2 < param%rgi**2) .or. (s2 > param%rgf**2)) then
 
       ! Set the acceleration due to Type-I to zero
       atypeI = 0.0_rk
@@ -244,21 +244,21 @@ contains
     else
 
       ! Get the keplerian orbital elements for body i
-      gm = pbod(1).mass + pbod(i).mass
-      call orbel_xv2aeq(pbod(i).r, pbod(i).v, gm, ialpha, apl, epl, qpl)
+      gm = pbod(1)%mass + pbod(i)%mass
+      call orbel_xv2aeq(pbod(i)%r, pbod(i)%v, gm, ialpha, apl, epl, qpl)
 
       ! Compute the semi-major axis and eccentricity damping timescales
-      mratio = pbod(i).mass/pbod(1).mass
-      hovera = param.zscale*apl**0.25_rk
+      mratio = pbod(i)%mass/pbod(1)%mass
+      hovera = param%zscale*apl**0.25_rk
       omega_min = sqrt(apl**3/gm)
-      mdisk = PI*sigma*(apl**(2.0_rk - param.spower))/pbod(1).mass
-      ta = (omega_min*hovera**2)/(param.ca*mratio*mdisk)
-      te = (omega_min*hovera**4)/(param.ce*mratio*mdisk)
+      mdisk = PI*sigma*(apl**(2.0_rk - param%spower))/pbod(1)%mass
+      ta = (omega_min*hovera**2)/(param%ca*mratio*mdisk)
+      te = (omega_min*hovera**4)/(param%ce*mratio*mdisk)
 
       ! Now multiply by the eccentricity correction from Papaloizou & Larwood (2000)
-      if(pbod(i).lgap) then
+      if(pbod(i)%lgap) then
 
-        fgap = (apl - pbod(i).rgap)/(abs(apl - pbod(i).rgap) + apl*pbod(i).wgap)
+        fgap = (apl - pbod(i)%rgap)/(abs(apl - pbod(i)%rgap) + apl*pbod(i)%wgap)
 
       else
 
@@ -278,17 +278,17 @@ contains
       ti = te
 
       ! Now get the acceleration components as in Papaloizou & Larwood (2000)
-      vdotr = dot_product(pbod(i).r, pbod(i).v)
-      r2 = sum(pbod(i).r**2)
+      vdotr = dot_product(pbod(i)%r, pbod(i)%v)
+      r2 = sum(pbod(i)%r**2)
       faca = 2.0_rk*vdotr/(r2*te)
-      !faca = fgap*2.d0*vdotr/(r2*te)  ! ecc and inc damping timescales -> 0 when in a gap
+      !faca = fgap*2%d0*vdotr/(r2*te)  ! ecc and inc damping timescales -> 0 when in a gap
 
-      atypeI(1) = -pbod(i).v(1)*fgap/ta - faca*pbod(i).r(1)
-      atypeI(2) = -pbod(i).v(2)*fgap/ta - faca*pbod(i).r(2)
-      atypeI(3) = -pbod(i).v(3)*fgap/ta - faca*pbod(i).r(3) - 2.0_rk*pbod(i).v(3)/ti
+      atypeI(1) = -pbod(i)%v(1)*fgap/ta - faca*pbod(i)%r(1)
+      atypeI(2) = -pbod(i)%v(2)*fgap/ta - faca*pbod(i)%r(2)
+      atypeI(3) = -pbod(i)%v(3)*fgap/ta - faca*pbod(i)%r(3) - 2.0_rk*pbod(i)%v(3)/ti
 
       ! Apply the Type-I acceleration
-      pbod(i).v = pbod(i).v + atypeI*dtau
+      pbod(i)%v = pbod(i)%v + atypeI*dtau
 
     end if
 
@@ -351,11 +351,11 @@ contains
   do i = 2, nbodm
 
     ! First update the location of any gaps
-    if(pbod(i).lgap) then
+    if(pbod(i)%lgap) then
 
-      gm = pbod(1).mass + pbod(i).mass
-      call orbel_xv2aeq(pbod(i).r, pbod(i).v, gm, ialpha, apl, epl, qpl)
-      pbod(i).rgap = apl
+      gm = pbod(1)%mass + pbod(i)%mass
+      call orbel_xv2aeq(pbod(i)%r, pbod(i)%v, gm, ialpha, apl, epl, qpl)
+      pbod(i)%rgap = apl
 
     end if
 
@@ -368,9 +368,9 @@ contains
     !$OMP FIRSTPRIVATE(pbodi) SHARED(nbod, nbodm, pbod, lhill)
     do j = nbodm + 1, nbod
 
-      dr = pbod(j).r - pbodi.r
+      dr = pbod(j)%r - pbodi%r
       dr2 = sum(dr**2)
-      if(dr2 < pbodi.rhill**2) lhill(j) = .true.
+      if(dr2 < pbodi%rhill**2) lhill(j) = .true.
 
     end do
     !$OMP END PARALLEL DO
@@ -435,17 +435,17 @@ contains
   !-----------------!
 
   ! Half time step
-  dth = 0.5_rk*param.dt
+  dth = 0.5_rk*param%dt
   
   ! Initialize merger list
   if(associated(pmerge)) deallocate(pmerge)
 
   ! Construct encounter list
-  if(param.lclose) call symba5_encounter_list(param, nbod, nbodm, pbod, penc, lenc)
+  if(param%lclose) call symba5_encounter_list(param, nbod, nbodm, pbod, penc, lenc)
   !lenc = .false.
 
   ! Apply gas drag and Type-I formulae
-  if(param.lgas) call symba5_gas_drag_kick(param, time, dth, nbod, nbodm, pbod)
+  if(param%lgas) call symba5_gas_drag_kick(param, time, dth, nbod, nbodm, pbod)
 
   ! Do a step
   if(lenc) then
@@ -461,18 +461,18 @@ contains
   end if
 
   ! Apply gas drag and Type-I formulae
-  if(param.lgas) call symba5_gas_drag_kick(param, time, dth, nbod, nbodm, pbod)
+  if(param%lgas) call symba5_gas_drag_kick(param, time, dth, nbod, nbodm, pbod)
 
   ! Print number of encounters and mergers found in this time step
-  !write(100,*) time, sum(penc.nenc), size(pmerge)
+  !write(100,*) time, sum(penc%nenc), size(pmerge)
 
   ! Deallocate encounter list
   do i = 2, nbodm
 
-    if(associated(penc(i).ienc)) then
+    if(associated(penc(i)%ienc)) then
 
-      penc(i).nenc = 0
-      deallocate(penc(i).ienc)
+      penc(i)%nenc = 0
+      deallocate(penc(i)%ienc)
 
     end if
 

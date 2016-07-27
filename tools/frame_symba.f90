@@ -112,17 +112,17 @@ call io_init_param(paramfile, param)
 call io_init_pl_symba(plfile, param, nbod, nbodm, pbod)
 
 ! Useful definitions
-mscale = pbod(1).mass*3.040432646e-06_rk
-tframe = param.t0
+mscale = pbod(1)%mass*3.040432646e-06_rk
+tframe = param%t0
 nf = -1
 
 if(nframe <= 1) nframe = 2
-dtframe = (param.tstop - param.t0)/real(nframe - 1, rk)
-if(modulo(dtframe,param.dtout) /= 0) dtframe = param.dtout*(floor(dtframe/param.dtout) + 1)
+dtframe = (param%tstop - param%t0)/real(nframe - 1, rk)
+if(modulo(dtframe,param%dtout) /= 0) dtframe = param%dtout*(floor(dtframe/param%dtout) + 1)
 write(*,'(a,i5,a,/)') 'Creating ', nframe, ' snapshots from t0 to tstop'
 
 !rplsml = 10.0**logr
-write(tf,'(1pe9.3)') param.t0
+write(tf,'(1pe9.3)') param%t0
 write(aminf,'(f4.1)') amin
 write(amaxf,'(f4.1)') amax
 write(mf,'(f5.2)') mpl
@@ -133,19 +133,19 @@ write(rf,'(1pe9.3)') rplsml
 open(unit = 7, file = 'plsml.dat', status = 'unknown')
 open(unit = 8, file = 'embryo.dat', status = 'unknown')
 
-if(param.lgas) then
+if(param%lgas) then
 
   do i = 2, nbod
 
-    gm = pbod(1).mass + pbod(i).mass
-    call orbel_xv2el(pbod(i).r, pbod(i).v, gm, ialpha, a, e, inc, capom, omega, capm)
-    if(pbod(i).mass < param.mtiny) then
+    gm = pbod(1)%mass + pbod(i)%mass
+    call orbel_xv2el(pbod(i)%r, pbod(i)%v, gm, ialpha, a, e, inc, capom, omega, capm)
+    if(pbod(i)%mass < param%mtiny) then
 
-      write(7,'(i7,8(1x,1pe22.15))') pbod(i).id, pbod(i).mass/mscale, a, e, inc, omega, capom, capm, pbod(i).rdrag
+      write(7,'(i7,8(1x,1pe22.15))') pbod(i)%id, pbod(i)%mass/mscale, a, e, inc, omega, capom, capm, pbod(i)%rdrag
 
     else
 
-      write(8,'(i7,8(1x,1pe22.15))') pbod(i).id, pbod(i).mass/mscale, a, e, inc, omega, capom, capm, pbod(i).rdrag
+      write(8,'(i7,8(1x,1pe22.15))') pbod(i)%id, pbod(i)%mass/mscale, a, e, inc, omega, capom, capm, pbod(i)%rdrag
 
     end if
 
@@ -155,15 +155,15 @@ else
 
   do i = 2, nbod
 
-    gm = pbod(1).mass + pbod(i).mass
-    call orbel_xv2el(pbod(i).r, pbod(i).v, gm, ialpha, a, e, inc, capom, omega, capm)
-    if(pbod(i).mass < param.mtiny) then
+    gm = pbod(1)%mass + pbod(i)%mass
+    call orbel_xv2el(pbod(i)%r, pbod(i)%v, gm, ialpha, a, e, inc, capom, omega, capm)
+    if(pbod(i)%mass < param%mtiny) then
 
-      write(7,'(i7,7(1x,1pe22.15))') pbod(i).id, pbod(i).mass/mscale, a, e, inc, omega, capom, capm
+      write(7,'(i7,7(1x,1pe22.15))') pbod(i)%id, pbod(i)%mass/mscale, a, e, inc, omega, capom, capm
 
     else
 
-      write(8,'(i7,7(1x,1pe22.15))') pbod(i).id, pbod(i).mass/mscale, a, e, inc, omega, capom, capm
+      write(8,'(i7,7(1x,1pe22.15))') pbod(i)%id, pbod(i)%mass/mscale, a, e, inc, omega, capom, capm
 
     end if
 
@@ -183,7 +183,7 @@ if((10 <= nf) .and. (nf <= 99))     write(fn, '("00",  i2)') nf
 if((100 <= nf) .and. (nf <= 999))   write(fn, '("0",   i3)') nf
 if((1000 <= nf) .and. (nf <= 9999)) write(fn, '(i4)') nf
 
-write(tf, '(1pe9.3)') param.t0
+write(tf, '(1pe9.3)') param%t0
 
 write(cmd,*) './@plot_frame ' // trim(fn) // ' ' // trim(tf) // ' ' // trim(aminf) // ' ' // trim(amaxf) // &
              ' ' // trim(mf) // ' ' // trim(gf) // ' ' // trim(sf) // ' ' // trim(rf)
@@ -191,27 +191,27 @@ write(cmd,*) './@plot_frame ' // trim(fn) // ' ' // trim(tf) // ' ' // trim(amin
 status = system(trim(cmd))
 
 ! Print binary format and open binary file
-select case(param.outtype)
+select case(param%outtype)
 
   case("FXDR4")
 
     !write(*,'(a,/)') ' Reading a single precision FXDR binary file'
-    call io_open_fxdr(param.outfile, "R", .TRUE., iu, ierr)
+    call io_open_fxdr(param%outfile, "R", .TRUE., iu, ierr)
 
   case("FXDR8")
 
     !write(*,'(a,/)') ' Reading a double precision FXDR binary file'
-    call io_open_fxdr(param.outfile, "R", .TRUE., iu, ierr)
+    call io_open_fxdr(param%outfile, "R", .TRUE., iu, ierr)
 
   case("REAL4")
 
     !write(*,'(a,/)') ' Reading a single precision binary file'
-    call io_open(iu, param.outfile, "OLD", "UNFORMATTED", ierr)
+    call io_open(iu, param%outfile, "OLD", "UNFORMATTED", ierr)
 
   case("REAL8")
 
     !write(*,'(a,/)') ' Reading a double precision binary file'
-    call io_open(iu, param.outfile, "OLD", "UNFORMATTED", ierr)
+    call io_open(iu, param%outfile, "OLD", "UNFORMATTED", ierr)
 
   case default
 
@@ -221,10 +221,10 @@ select case(param.outtype)
 end select
 
 ! Loop through entries in the binary file, locating desired frames
-do while(tframe <= param.tstop)
+do while(tframe <= param%tstop)
 
   ! Read header of current frame of binary file
-  ierr = io_read_hdr(iu, t, nbod, ntp, param.ioutform, param.outtype)
+  ierr = io_read_hdr(iu, t, nbod, ntp, param%ioutform, param%outtype)
   if(ierr /= 0) then
 
     write(*,'(a)') 'Could not reader header of binary!'
@@ -240,13 +240,13 @@ do while(tframe <= param.tstop)
     open(unit = 8, file = 'embryo.dat', status = 'unknown')
 
     ! If the gas drag flag is set, read and write the drag radius in additional to other standard variables
-    if(param.lgas) then
+    if(param%lgas) then
 
       ! Loop over all the entries in this frame
       do i = 2, nbod
 
         ! Read entry for body i
-        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param.outtype, mass = mu, radius = rad)
+        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param%outtype, mass = mu, radius = rad)
         if(ierr /= 0) then
 
           write(*,'(a)') 'Could not read entry in binary!'
@@ -255,7 +255,7 @@ do while(tframe <= param.tstop)
         end if
 
         ! Write entry to either output file, depending on its mass
-        if(mu < param.mtiny) then
+        if(mu < param%mtiny) then
 
           write(7,'(i7,8(1x,1pe22.15))') id, mu/mscale, a, e, inc, omega, capom, capm, rad
 
@@ -273,7 +273,7 @@ do while(tframe <= param.tstop)
       do i = 2, nbod
 
         ! Read entry for body i
-        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param.outtype, mass = mu)
+        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param%outtype, mass = mu)
         if(ierr /= 0) then
 
           write(*,'(a)') 'Did not find time!'
@@ -282,7 +282,7 @@ do while(tframe <= param.tstop)
         end if
 
         ! Write entry to either output file, depending on its mass
-        if(mu < param.mtiny) then
+        if(mu < param%mtiny) then
 
           write(7,'(i7,7(1x,1pe22.15))') id, mu/mscale, a, e, inc, omega, capom, capm
 
@@ -323,13 +323,13 @@ do while(tframe <= param.tstop)
   else
 
     ! If the current frame does not matche the desired frame, go over entries to the next frame
-    if(param.lgas) then
+    if(param%lgas) then
 
       ! Loop over all the entries in this frame
       do i = 2, nbod
 
         ! Read entry for body i
-        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param.outtype, mass = mu, radius = rad)
+        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param%outtype, mass = mu, radius = rad)
 
       end do
 
@@ -339,7 +339,7 @@ do while(tframe <= param.tstop)
       do i = 2, nbod
 
         ! Read entry for body i
-        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param.outtype, mass = mu)
+        ierr = io_read_line(iu, id, a, e, inc, capom, omega, capm, param%outtype, mass = mu)
 
       end do
 
@@ -350,7 +350,7 @@ do while(tframe <= param.tstop)
 
 end do
 
-if(tframe >= param.tstop) then
+if(tframe >= param%tstop) then
 
   status = system("rm plsml.dat embryo.dat")
   !status = system('rm embryo.dat')

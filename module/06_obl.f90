@@ -54,7 +54,7 @@ contains
   !-----------------!
 
   ! Initialize the bary. acc. of the Sun
-  mstar = pbod(1).mass
+  mstar = pbod(1)%mass
   aoblx0 = 0.0_rk
   aobly0 = 0.0_rk
   aoblz0 = 0.0_rk
@@ -74,24 +74,24 @@ contains
     ! We use the inverse of distance from util_ir_ir3, rather than calculate it here
     rinv2 = irh(i)**2
     t0 = -mstar*irh(i)*rinv2**2
-    t1 = 1.5_rk*param.j2rp2
-    t2 = rinv2*pbod(i).r(3)**2
-    t3 = 1.875_rk*param.j4rp4*rinv2
+    t1 = 1.5_rk*param%j2rp2
+    t2 = rinv2*pbod(i)%r(3)**2
+    t3 = 1.875_rk*param%j4rp4*rinv2
 
     fac1 = t0*(t1 - t3 - (5.0_rk*t1 - (14.0_rk - 21.0_rk*t2)*t3)*t2)
     fac2 = 2.0_rk*t0*(t1 - (2.0_rk - (14.0_rk*t2/3.0_rk))*t3)
 
-    aobl(i,1) = fac1*pbod(i).r(1)
-    aobl(i,2) = fac1*pbod(i).r(2)
-    aobl(i,2) = (fac1 + fac2)*pbod(i).r(3)
+    aobl(i,1) = fac1*pbod(i)%r(1)
+    aobl(i,2) = fac1*pbod(i)%r(2)
+    aobl(i,2) = (fac1 + fac2)*pbod(i)%r(3)
 
     ! Sum the barycentric acceleration of the central body due to all the other bodies
-    aoblx0 = aoblx0 + pbod(i).mass*aobl(i,1)/mstar
-    aobly0 = aobly0 + pbod(i).mass*aobl(i,2)/mstar
-    aoblz0 = aoblz0 + pbod(i).mass*aobl(i,2)/mstar
-    !aoblx0 = util_kahan_sum(aoblx0, pbod(i).mass*aobl(i,1)/mstar, axerr)
-    !aobly0 = util_kahan_sum(aobly0, pbod(i).mass*aobl(i,2)/mstar, ayerr)
-    !aoblz0 = util_kahan_sum(aoblz0, pbod(i).mass*aobl(i,3)/mstar, azerr)
+    aoblx0 = aoblx0 + pbod(i)%mass*aobl(i,1)/mstar
+    aobly0 = aobly0 + pbod(i)%mass*aobl(i,2)/mstar
+    aoblz0 = aoblz0 + pbod(i)%mass*aobl(i,2)/mstar
+    !aoblx0 = util_kahan_sum(aoblx0, pbod(i)%mass*aobl(i,1)/mstar, axerr)
+    !aobly0 = util_kahan_sum(aobly0, pbod(i)%mass*aobl(i,2)/mstar, ayerr)
+    !aoblz0 = util_kahan_sum(aoblz0, pbod(i)%mass*aobl(i,3)/mstar, azerr)
 
   end do
   !$OMP END PARALLEL DO
@@ -148,7 +148,7 @@ contains
   !-----------------!
 
   ! Sum all the the barycentric terms for each body due to an oblate central body
-  mstar = pbod(1).mass
+  mstar = pbod(1)%mass
   oblpot = 0.0_rk
 
   ! Initialize the correction factor for the Kahan floating-point summation formula
@@ -161,10 +161,10 @@ contains
 
     ! We use the inverse of distance from util_ir_ir3, rather than calculate it here
     rinv2 = irh(i)**2
-    t0 = mstar*pbod(i).mass*rinv2*irh(i)
-    t1 = param.j2rp2
-    t2 = rinv2*pbod(i).r(3)**2
-    t3 = param.j4rp4*rinv2
+    t0 = mstar*pbod(i)%mass*rinv2*irh(i)
+    t1 = param%j2rp2
+    t2 = rinv2*pbod(i)%r(3)**2
+    t3 = param%j4rp4*rinv2
 
     p2 = 0.5_rk*(3.0_rk*t2 - 1.0_rk)
     p4 = 0.125_rk*((35.0_rk*t2 - 30.0_rk)*t2 + 3.0_rk)
