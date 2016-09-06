@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm -f drag_size_gen
 rm -f gen_ray_size
 rm -f swift_symba5_gas
@@ -7,10 +9,14 @@ ln -s ../bin/drag_size_gen .
 ln -s ../bin/gen_ray_size .
 ln -s ../bin/swift_symba5_gas .
 ln -s ../bin/follow_symba .
+ln -s ../bin/frame_symba .
+ln -s ../bin/@plot_frame .
 
 rm -f *.dat
 rm -f pl.in
 
 ./drag_size_gen < drag_size_gen.in
 ./gen_ray_size < gen_ray_size.in
-./swift_symba5_gas
+time ./swift_symba5_gas
+./follow_symba param.in pl.in 2
+./frame_symba param.in pl.in 10 1.0 9.0 11.0 1.0 1.0 1.0 1.0

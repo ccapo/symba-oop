@@ -26,10 +26,11 @@ implicit none
 integer(ik), parameter :: kbinmax = 1000
 
 ! Internal variables
-integer(ik) :: nseed, seed, time(8)
+integer(ik) :: nseed, time(8), iseed
+integer(ik), allocatable :: seed(:)
 
 integer(ik) :: nbig, nplsml, npl
-integer(ik) :: i, j, iseed, ialpha
+integer(ik) :: i, j, ialpha
 real(rk) :: amin, amax, power, p2, factor, frac
 real(rk) :: rmse, rmsi, random
 
@@ -46,10 +47,26 @@ real(rk), dimension(kbinmax) :: mplk, rhok, rdragk, rmsek, rmsik
 integer(ik) :: k, kk, kbin, kplsml
 
 ! Random seed based on current date and time
-call random_seed(size = nseed)
-call date_and_time(values = time)
-seed = 79867_ik*sum(abs(time))
-call random_seed(put = (/ seed, seed/13_ik /) )
+write(*,'(/,a)', advance = 'no') 'Seed value: '
+read(*,*) iseed
+if(iseed < 0) then
+  call random_seed(size = nseed)
+  allocate(seed(nseed))
+  call date_and_time(values = time)
+  seed = 79867_ik*sum(abs(time)) + 37_ik * [ (k, k = 1, nseed) ]
+  write(*,*) ''
+  write(*,*) seed
+  call random_seed(put = seed)
+  deallocate(seed)
+else
+  call random_seed(size = nseed)
+  allocate(seed(nseed))
+  seed = iseed + [ (k, k = 1, nseed) ]
+  write(*,*) ''
+  write(*,*) seed
+  call random_seed(put = seed)
+  deallocate(seed)
+end if
 
 ! Start with data for the plsml distn in semimajor axis
 write(*,'(/,a)', advance = 'no') 'For plsml distn, enter amin (AU), amax (AU), power law exponent: '

@@ -45,27 +45,27 @@ contains
   !-----------------!
 
   ! Convert from barycentric => heliocentric
-  if(param.lbary) then
+  if(param%lbary) then
 
     ! Store the barycentric position and velocity of the central body
-    rtmp = pbod(1).r
-    vtmp = pbod(1).v
+    rtmp = pbod(1)%r
+    vtmp = pbod(1)%v
 
     ! Compute the heliocentric position and velocity of all the bodies
     !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) PRIVATE(i) FIRSTPRIVATE(rtmp, vtmp) &
     !$OMP SHARED(nbod, pbod)
     do i = 1, nbod
 
-      pbod(i).r = pbod(i).r - rtmp
-      pbod(i).v = pbod(i).v - vtmp
+      pbod(i)%r = pbod(i)%r - rtmp
+      pbod(i)%v = pbod(i)%v - vtmp
 
     end do
     !$OMP END PARALLEL DO
 
     ! Set coordinate flags
-    param.lhelio = .true.
-    param.lbary = .false.
-    param.lcanon = .false.
+    param%lhelio = .true.
+    param%lbary = .false.
+    param%lcanon = .false.
 
   else
 
@@ -118,13 +118,13 @@ contains
   !-----------------!
 
   ! Initialize the total system mass
-  msys = pbod(1).mass
+  msys = pbod(1)%mass
 
   ! Convert from heliocentric => barycentric
-  if(param.lhelio) then
+  if(param%lhelio) then
 
     ! Initialize the temporary variables: x, y, z, vx, vy and vz
-    msys = pbod(1).mass
+    msys = pbod(1)%mass
     x = 0.0_rk
     y = 0.0_rk
     z = 0.0_rk
@@ -149,20 +149,20 @@ contains
     !$OMP DO SCHEDULE(STATIC) REDUCTION(+ : msys, x, y, z, vx, vy, vz)
     do i = 2, nbod
 
-      msys = msys + pbod(i).mass
-      x = x + pbod(i).mass*pbod(i).r(1)
-      y = y + pbod(i).mass*pbod(i).r(2)
-      z = z + pbod(i).mass*pbod(i).r(3)
-      vx = vx + pbod(i).mass*pbod(i).v(1)
-      vy = vy + pbod(i).mass*pbod(i).v(2)
-      vz = vx + pbod(i).mass*pbod(i).v(3)
-      !msys = util_kahan_sum(msys, pbod(i).mass, msyserr)
-      !x = util_kahan_sum(x, pbod(i).mass*pbod(i).r(1), xerr)
-      !y = util_kahan_sum(y, pbod(i).mass*pbod(i).r(2), yerr)
-      !z = util_kahan_sum(z, pbod(i).mass*pbod(i).r(3), zerr)
-      !vx = util_kahan_sum(vx, pbod(i).mass*pbod(i).v(1), vxerr)
-      !vy = util_kahan_sum(vy, pbod(i).mass*pbod(i).v(2), vyerr)
-      !vz = util_kahan_sum(vx, pbod(i).mass*pbod(i).v(3), vzerr)
+      msys = msys + pbod(i)%mass
+      x = x + pbod(i)%mass*pbod(i)%r(1)
+      y = y + pbod(i)%mass*pbod(i)%r(2)
+      z = z + pbod(i)%mass*pbod(i)%r(3)
+      vx = vx + pbod(i)%mass*pbod(i)%v(1)
+      vy = vy + pbod(i)%mass*pbod(i)%v(2)
+      vz = vx + pbod(i)%mass*pbod(i)%v(3)
+      !msys = util_kahan_sum(msys, pbod(i)%mass, msyserr)
+      !x = util_kahan_sum(x, pbod(i)%mass*pbod(i)%r(1), xerr)
+      !y = util_kahan_sum(y, pbod(i)%mass*pbod(i)%r(2), yerr)
+      !z = util_kahan_sum(z, pbod(i)%mass*pbod(i)%r(3), zerr)
+      !vx = util_kahan_sum(vx, pbod(i)%mass*pbod(i)%v(1), vxerr)
+      !vy = util_kahan_sum(vy, pbod(i)%mass*pbod(i)%v(2), vyerr)
+      !vz = util_kahan_sum(vx, pbod(i)%mass*pbod(i)%v(3), vzerr)
 
     end do
     !$OMP END DO
@@ -173,8 +173,8 @@ contains
     !$OMP DO SCHEDULE(STATIC)
     do i = 1, nbod
 
-      pbod(i).r = pbod(i).r - rtmp
-      pbod(i).v = pbod(i).v - vtmp
+      pbod(i)%r = pbod(i)%r - rtmp
+      pbod(i)%v = pbod(i)%v - vtmp
 
     end do
     !$OMP END DO NOWAIT
@@ -182,14 +182,14 @@ contains
     !$OMP END PARALLEL
 
     ! Set coordinate flags
-    param.lhelio = .false.
-    param.lbary = .true.
-    param.lcanon = .false.
+    param%lhelio = .false.
+    param%lbary = .true.
+    param%lcanon = .false.
 
-  else if(param.lcanon) then ! Convert from heliocentric => barycentric for positions *only*
+  else if(param%lcanon) then ! Convert from heliocentric => barycentric for positions *only*
 
     ! Initialize the temporary variables: x, y, z, vx, vy and vz
-    msys = pbod(1).mass
+    msys = pbod(1)%mass
     x = 0.0_rk
     y = 0.0_rk
     z = 0.0_rk
@@ -208,14 +208,14 @@ contains
     !$OMP DO SCHEDULE(STATIC) REDUCTION(+ : msys, x, y, z)
     do i = 2, nbod
 
-      msys = msys + pbod(i).mass
-      x = x + pbod(i).mass*pbod(i).r(1)
-      y = y + pbod(i).mass*pbod(i).r(2)
-      z = z + pbod(i).mass*pbod(i).r(3)
-      !msys = util_kahan_sum(msys, pbod(i).mass, msyserr)
-      !x = util_kahan_sum(x, pbod(i).mass*pbod(i).r(1), xerr)
-      !y = util_kahan_sum(y, pbod(i).mass*pbod(i).r(2), yerr)
-      !z = util_kahan_sum(z, pbod(i).mass*pbod(i).r(3), zerr)
+      msys = msys + pbod(i)%mass
+      x = x + pbod(i)%mass*pbod(i)%r(1)
+      y = y + pbod(i)%mass*pbod(i)%r(2)
+      z = z + pbod(i)%mass*pbod(i)%r(3)
+      !msys = util_kahan_sum(msys, pbod(i)%mass, msyserr)
+      !x = util_kahan_sum(x, pbod(i)%mass*pbod(i)%r(1), xerr)
+      !y = util_kahan_sum(y, pbod(i)%mass*pbod(i)%r(2), yerr)
+      !z = util_kahan_sum(z, pbod(i)%mass*pbod(i)%r(3), zerr)
 
     end do
     !$OMP END DO
@@ -225,7 +225,7 @@ contains
     !$OMP DO SCHEDULE(STATIC)
     do i = 1, nbod
 
-      pbod(i).r = pbod(i).r - rtmp
+      pbod(i)%r = pbod(i)%r - rtmp
 
     end do
     !$OMP END DO NOWAIT
@@ -233,9 +233,9 @@ contains
     !$OMP END PARALLEL
 
     ! Set coordinate flags
-    param.lhelio = .false.
-    param.lbary = .true.
-    param.lcanon = .false.
+    param%lhelio = .false.
+    param%lbary = .true.
+    param%lcanon = .false.
 
   else
 
@@ -284,13 +284,13 @@ contains
   !-----------------!
 
   ! Convert velocities from barycentric => heliocentric
-  if(param.lcanon) then
+  if(param%lcanon) then
 
     ! Initialize temporary variables
-    mstar = pbod(1).mass
-    vx = -pbod(2).mass*pbod(2).v(1)
-    vy = -pbod(2).mass*pbod(2).v(2)
-    vz = -pbod(2).mass*pbod(2).v(3)
+    mstar = pbod(1)%mass
+    vx = -pbod(2)%mass*pbod(2)%v(1)
+    vy = -pbod(2)%mass*pbod(2)%v(2)
+    vz = -pbod(2)%mass*pbod(2)%v(3)
 
     ! Initialize the correction factors for the Kahan floating-point summation formula
     !vxerr = 0.0_rk
@@ -304,12 +304,12 @@ contains
     !$OMP DO SCHEDULE(STATIC) REDUCTION(+ : vx, vy, vz)
     do i = 3, nbod
 
-      vx = vx - pbod(i).mass*pbod(i).v(1)
-      vy = vy - pbod(i).mass*pbod(i).v(2)
-      vz = vz - pbod(i).mass*pbod(i).v(3)
-      !vx = util_kahan_sum(vx, -pbod(i).mass*pbod(i).v(1), vxerr)
-      !vy = util_kahan_sum(vy, -pbod(i).mass*pbod(i).v(2), vyerr)
-      !vz = util_kahan_sum(vz, -pbod(i).mass*pbod(i).v(3), vzerr)
+      vx = vx - pbod(i)%mass*pbod(i)%v(1)
+      vy = vy - pbod(i)%mass*pbod(i)%v(2)
+      vz = vz - pbod(i)%mass*pbod(i)%v(3)
+      !vx = util_kahan_sum(vx, -pbod(i)%mass*pbod(i)%v(1), vxerr)
+      !vy = util_kahan_sum(vy, -pbod(i)%mass*pbod(i)%v(2), vyerr)
+      !vz = util_kahan_sum(vz, -pbod(i)%mass*pbod(i)%v(3), vzerr)
 
     end do
     !$OMP END DO
@@ -319,7 +319,7 @@ contains
     !$OMP DO SCHEDULE(STATIC)
     do i = 2, nbod
 
-      pbod(i).v = pbod(i).v - vtmp
+      pbod(i)%v = pbod(i)%v - vtmp
 
     end do
     !$OMP END DO NOWAIT
@@ -327,12 +327,12 @@ contains
     !$OMP END PARALLEL
 
     ! Set heliocentric velocity of the central body
-    pbod(1).v = 0.0_rk
+    pbod(1)%v = 0.0_rk
 
     ! Set coordinate flags
-    param.lhelio = .true.
-    param.lbary = .false.
-    param.lcanon = .false.
+    param%lhelio = .true.
+    param%lbary = .false.
+    param%lcanon = .false.
 
   else
 
@@ -381,10 +381,10 @@ contains
   !-----------------!
 
   ! Convert velocities from heliocentric => barycentric
-  if(param.lhelio) then
+  if(param%lhelio) then
 
     ! Initialize the total system mass, and the temporary variable: vx, vy and vz
-    msys = pbod(1).mass
+    msys = pbod(1)%mass
     vx = 0.0_rk
     vy = 0.0_rk
     vz = 0.0_rk
@@ -402,14 +402,14 @@ contains
     !$OMP DO SCHEDULE(STATIC) REDUCTION(+ : msys, vx, vy, vz)
     do i = 2, nbod
 
-      msys = msys + pbod(i).mass
-      vx = vx + pbod(i).mass*pbod(i).v(1)
-      vy = vy + pbod(i).mass*pbod(i).v(2)
-      vz = vz + pbod(i).mass*pbod(i).v(3)
-      !msys = util_kahan_sum(msys, pbod(i).mass, msyserr)
-      !vx = util_kahan_sum(vx, pbod(i).mass*pbod(i).v(1), vxerr)
-      !vy = util_kahan_sum(vy, pbod(i).mass*pbod(i).v(2), vyerr)
-      !vz = util_kahan_sum(vz, pbod(i).mass*pbod(i).v(3), vzerr)
+      msys = msys + pbod(i)%mass
+      vx = vx + pbod(i)%mass*pbod(i)%v(1)
+      vy = vy + pbod(i)%mass*pbod(i)%v(2)
+      vz = vz + pbod(i)%mass*pbod(i)%v(3)
+      !msys = util_kahan_sum(msys, pbod(i)%mass, msyserr)
+      !vx = util_kahan_sum(vx, pbod(i)%mass*pbod(i)%v(1), vxerr)
+      !vy = util_kahan_sum(vy, pbod(i)%mass*pbod(i)%v(2), vyerr)
+      !vz = util_kahan_sum(vz, pbod(i)%mass*pbod(i)%v(3), vzerr)
 
     end do
     !$OMP END DO
@@ -419,19 +419,19 @@ contains
     !$OMP DO SCHEDULE(STATIC)
     do i = 2, nbod
 
-      pbod(i).v = pbod(i).v + vtmp
+      pbod(i)%v = pbod(i)%v + vtmp
 
     end do
     !$OMP END DO NOWAIT
 
     !$OMP END PARALLEL
 
-    pbod(1).v = -1.0_rk*[ vx, vy, vz ]/msys
+    pbod(1)%v = -1.0_rk*[ vx, vy, vz ]/msys
 
     ! Set coordinate flags
-    param.lhelio = .false.
-    param.lbary = .false.
-    param.lcanon = .true.
+    param%lhelio = .false.
+    param%lbary = .false.
+    param%lcanon = .true.
 
   else
 

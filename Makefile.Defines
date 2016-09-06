@@ -27,7 +27,7 @@
 #******************************************************************************
 
 # System utilities
-SHELL           = /bin/tcsh
+SHELL           = /bin/bash
 INSTALL         = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
 INSTALL_DATA    = $(INSTALL) -m 644
@@ -36,54 +36,28 @@ INSTALL_DATA    = $(INSTALL) -m 644
 SWIFT_HOME      = $(HOME)/symba-oop
 
 # Compiler definitions
-FORTRAN         = ifort
+FORTRAN         = gfortran
 CC              = gcc
 
 64_BIT_REALS    = -r8
 
-# These are the definitions specific to Mac OS X
-ifeq ($(shell uname -s),Darwin)
+# System utilities
+AR              = ar
+RANLIB          = ranlib
 
-  # System utilities
-  AR              = ar
-  RANLIB          = ranlib -c
+# Compiler definitions
 
-  # Compiler definitions
+# DO NOT include in FFLAGS the "-c" option to compile object only
+# this is done explicitly as needed in the Makefile
+#FFLAGS          = -O3 -xHOST -ip -align all -pad -opt-prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model strict -prec-div -prec-sqrt -no-ftz -openmp
+FFLAGS          = -O2 -ffixed-line-length-132 -fopenmp
 
-  # DO NOT include in FFLAGS the "-c" option to compile object only
-  # this is done explicitly as needed in the Makefile
-  FFLAGS          = -O3 -xT -ip -align all -pad -prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model precise -prec-div -prec-sqrt -no-ftz -openmp -Wl,-stack_size,0x10000000
+# Use the following compiler flags to enable symbol information for debugger (idb)
+#FFLAGS          = -O0 -xHOST -ip -align all -pad -opt-prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model strict -prec-div -prec-sqrt -no-ftz -C -g -traceback -fp-stack-check -openmp
 
-  # Use the following compiler flags to enable symbol information for debugger (idb)
-  #FFLAGS          = -O0 -xT -ip -align all -pad -prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model precise -prec-div -prec-sqrt -no-ftz -C -g -p -traceback -fp-stack-check -openmp -Wl,-stack_size,0x10000000
-
-  # DO NOT include in CFLAGS the "-c" option to compile object only
-  # this is done explicitly as needed in the Makefile
-  CFLAGS          = -O3 -w -m64
-
-# While these will work on Linux systems
-else
-
-  # System utilities
-  AR              = ar
-  RANLIB          = ranlib
-
-  # Compiler definitions
-
-  # DO NOT include in FFLAGS the "-c" option to compile object only
-  # this is done explicitly as needed in the Makefile
-  # -ipo <== Removed for SciNet GPC, gave several errors about 'unresolved' or 'undefined reference' to functions and subroutines
-  FFLAGS          = -O3 -xHOST -ip -align all -pad -opt-prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model strict -prec-div -prec-sqrt -no-ftz -openmp
-
-  # Use the following compiler flags to enable symbol information for debugger (idb)
-  # -ipo <== Removed for SciNet GPC, gave several errors about 'unresolved' or 'undefined reference' to functions and subroutine
-  #FFLAGS          = -O0 -xHOST -ip -align all -pad -opt-prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model strict -prec-div -prec-sqrt -no-ftz -C -g -traceback -fp-stack-check -openmp
-
-  # DO NOT include in CFLAGS the "-c" option to compile object only
-  # this is done explicitly as needed in the Makefile
-  CFLAGS          = -O3 -w -m32
-
-endif
+# DO NOT include in CFLAGS the "-c" option to compile object only
+# this is done explicitly as needed in the Makefile
+CFLAGS          = -O2 -s -w -m64
 
 # FXDR Makefile compatibility - DO NOT ALTER
 F77CMD          = $(FORTRAN)

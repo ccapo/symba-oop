@@ -1,4 +1,4 @@
-#!/bin/tcsh
+#!/bin/bash
 #
 # To plot say the first frame
 # plot_data frame time amin amax mpl fg fs rdrag
@@ -50,16 +50,9 @@ plot 'plsml.dat' using 3:5 notitle with dots lw 2 lt 1, 'embryo.dat' using 3:5 n
 EOS
 
 sed 's|\%\%BoundingBox: 50 50 528 244|\%\%BoundingBox: 0 20 580 800|' < tmp.ps > frame_$1.ps
-if(`uname -s` == 'Linux') then
-  ps2pdf frame_$1.ps
-  convert frame_$1.pdf frame_$1.png
-  rm tmp.ps frame_$1.ps frame_$1.pdf
-else if(`uname -s` == 'Darwin') then
-  convert frame_$1.ps frame_$1.png
-  rm tmp.ps frame_$1.ps
-else
-  echo "Unrecognized Operating System!"
-endif
+ps2pdf frame_$1.ps
+convert frame_$1.pdf frame_$1.png
+rm tmp.ps frame_$1.ps frame_$1.pdf
 
 #
 

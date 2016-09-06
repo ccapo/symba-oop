@@ -188,103 +188,103 @@ contains
 
   end if
 
-  param.paramfile = infile
-  param.t0 = t0
-  param.tstop = tstop
-  param.dt = dt
-  param.dtout = dtout
-  param.dtdump = dtdump
-  param.outfile = outfile
-  param.outtype = outtype
-  param.outstat = outstat
-  param.lenergy = lenergy
+  param%paramfile = infile
+  param%t0 = t0
+  param%tstop = tstop
+  param%dt = dt
+  param%dtout = dtout
+  param%dtdump = dtdump
+  param%outfile = outfile
+  param%outtype = outtype
+  param%outstat = outstat
+  param%lenergy = lenergy
 
-  param.lhelio = .true.
-  param.lbary = .false.
-  param.lcanon = .false.
+  param%lhelio = .true.
+  param%lbary = .false.
+  param%lcanon = .false.
 
   read(unit = iu, nml = stellar_params)
-  param.loblate = loblate
-  param.j2rp2 = j2
-  param.j4rp4 = j4
-  param.lclose = lclose
-  param.laccrete = lclose ! Assumes that if we want to resolve close encounters, we want to permit accretion events as well
-  param.rmin = rmin
-  param.rmax = rmax
-  param.rmaxu = rmaxu
-  param.qmin = qmin
+  param%loblate = loblate
+  param%j2rp2 = j2
+  param%j4rp4 = j4
+  param%lclose = lclose
+  param%laccrete = lclose ! Assumes that if we want to resolve close encounters, we want to permit accretion events as well
+  param%rmin = rmin
+  param%rmax = rmax
+  param%rmaxu = rmaxu
+  param%qmin = qmin
 
   read(unit = iu, nml = symba_params)
-  param.mtiny = mtiny*mearth ! Convert from Earth Mass to Solar Mass
+  param%mtiny = mtiny*mearth ! Convert from Earth Mass to Solar Mass
 
   read(unit = iu, nml = gas_params)
-  param.lgas = lgas
-  param.rhogas0 = rhogas0*msun*1.68314195e6_rk ! Convert from g/cm^3 to Solar Mass/AU^3
-  param.gpower = gpower
-  param.zscale = zscale
-  param.rgi = rgi
-  param.rgf = rgf
-  param.taugas = taugas
-  param.ca = ca
-  param.ce = ce
-  param.sigma0 = param.rhogas0*param.zscale*sqrt(PI)
-  param.spower = param.gpower - 1.25_rk
+  param%lgas = lgas
+  param%rhogas0 = rhogas0*msun*1.68314195e6_rk ! Convert from g/cm^3 to Solar Mass/AU^3
+  param%gpower = gpower
+  param%zscale = zscale
+  param%rgi = rgi
+  param%rgf = rgf
+  param%taugas = taugas
+  param%ca = ca
+  param%ce = ce
+  param%sigma0 = param%rhogas0*param%zscale*sqrt(PI)
+  param%spower = param%gpower - 1.25_rk
 
   close(unit = iu)
 
   ! Print simulation parameters
   write(*,'(a)')             " Simulation parameters:"
   write(*,'(a)')             " ----------------------"
-  write(*,'(a,1pe12.5,a)')   " t0     = ", param.t0,     " years"
-  write(*,'(a,1pe12.5,a)')   " tstop  = ", param.tstop,  " years"
-  write(*,'(a,1pe12.5,a)')   " dt     = ", param.dt,     " years"
-  write(*,'(a,1pe12.5,a)')   " dtout  = ", param.dtout,  " years"
-  write(*,'(a,1pe12.5,a,/)') " dtdump = ", param.dtdump, " years"
+  write(*,'(a,1pe12.5,a)')   " t0     = ", param%t0,     " years"
+  write(*,'(a,1pe12.5,a)')   " tstop  = ", param%tstop,  " years"
+  write(*,'(a,1pe12.5,a)')   " dt     = ", param%dt,     " years"
+  write(*,'(a,1pe12.5,a)')   " dtout  = ", param%dtout,  " years"
+  write(*,'(a,1pe12.5,a,/)') " dtdump = ", param%dtdump, " years"
 
   if(lstop) write(*,'(a,/)') " *** tstop modified to be an integer multiple of dt ***"
   if(lout)  write(*,'(a,/)') " *** dtout modified to be an integer multiple of dt ***"
   if(ldump) write(*,'(a,/)') " *** dtdump modified to be an integer multiple of dt ***"
 
   ! Print close encounter information, if relevant
-  if(param.lclose) then
+  if(param%lclose) then
 
     write(*,'(a)')             " Close encounter parameters:"
     write(*,'(a)')             " ---------------------------"
-    write(*,'(a,1pe12.5,a)')   " rmin   = ", param.rmin,  " AU"
-    write(*,'(a,1pe12.5,a)')   " rmax   = ", param.rmax,  " AU"
-    write(*,'(a,1pe12.5,a)')   " rmamu  = ", param.rmaxu, " AU"
-    write(*,'(a,1pe12.5,a,/)') " qmin   = ", param.qmin,  " AU"
+    write(*,'(a,1pe12.5,a)')   " rmin   = ", param%rmin,  " AU"
+    write(*,'(a,1pe12.5,a)')   " rmax   = ", param%rmax,  " AU"
+    write(*,'(a,1pe12.5,a)')   " rmamu  = ", param%rmaxu, " AU"
+    write(*,'(a,1pe12.5,a,/)') " qmin   = ", param%qmin,  " AU"
 
   else
 
-    param.rmin = -1.0_rk
-    param.rmax = -1.0_rk
-    param.rmaxu = -1.0_rk
-    param.qmin = -1.0_rk
+    param%rmin = -1.0_rk
+    param%rmax = -1.0_rk
+    param%rmaxu = -1.0_rk
+    param%qmin = -1.0_rk
 
   end if
 
   ! Print binary output parameters
   write(*,'(a)')  " Binary output parameters:"
   write(*,'(a)')  " -------------------------"
-  write(*,'(2a)') " Output filename = ", trim(adjustl(param.outfile))
-  write(*,'(2a)') " Output type     = ", trim(adjustl(param.outtype))
+  write(*,'(2a)') " Output filename = ", trim(adjustl(param%outfile))
+  write(*,'(2a)') " Output type     = ", trim(adjustl(param%outtype))
 
   ! Set output format integer, and print choice
   if(outform == "EL") then
 
-    param.ioutform = EL ! Osculating Keplerian orbital elements
+    param%ioutform = EL ! Osculating Keplerian orbital elements
     write(*,'(a,/)') " Output format   = Osculating Keplerian orbital elements"
 
   else
 
-    param.ioutform = XV ! Cartesian positions and velocities
+    param%ioutform = XV ! Cartesian positions and velocities
     write(*,'(a,/)') " Output format   = Cartesian positions and velocities"
 
   end if
 
   ! Print energy information, if relevant
-  if(param.lenergy) then
+  if(param%lenergy) then
 
     write(*,'(a)')   " Energy output parameters:"
     write(*,'(a)')   " -------------------------"
@@ -293,18 +293,18 @@ contains
   end if
 
   ! Print gas parameters, if relevant
-  if(param.lgas) then
+  if(param%lgas) then
 
     write(*,'(a)')           " Gas disk parameters:"
     write(*,'(a)')           " --------------------"
     write(*,'(a,1pe11.5,a)') " Density of gas @ 1 AU        = ", rhogas0,        " g/cm^3"
-    write(*,'(a,1pe11.5)')   " Power law index              = ", param.gpower
-    write(*,'(a,1pe11.5,a)') " Gas scale height @ 1 AU      = ", param.zscale, " AU"
-    write(*,'(a,1pe11.5,a)') " Inner edge of the gas disk   = ", param.rgi,    " AU"
-    write(*,'(a,1pe11.5,a)') " Outer edge of the gas disk   = ", param.rgf,    " AU"
-    write(*,'(a,1pe11.5,a)') " Gas decay time scale         = ", param.taugas, " years"
-    write(*,'(a,1pe11.5)')   " Type-I drag efficiency [c_a] = ", param.ca
-    write(*,'(a,1pe11.5,/)') " Type-I drag efficiency [c_e] = ", param.ce
+    write(*,'(a,1pe11.5)')   " Power law index              = ", param%gpower
+    write(*,'(a,1pe11.5,a)') " Gas scale height @ 1 AU      = ", param%zscale, " AU"
+    write(*,'(a,1pe11.5,a)') " Inner edge of the gas disk   = ", param%rgi,    " AU"
+    write(*,'(a,1pe11.5,a)') " Outer edge of the gas disk   = ", param%rgf,    " AU"
+    write(*,'(a,1pe11.5,a)') " Gas decay time scale         = ", param%taugas, " years"
+    write(*,'(a,1pe11.5)')   " Type-I drag efficiency [c_a] = ", param%ca
+    write(*,'(a,1pe11.5,/)') " Type-I drag efficiency [c_e] = ", param%ce
 
   end if
 
@@ -389,29 +389,29 @@ contains
   end if
 
   ! Store the mass, heliocentric position and velocity of the central body
-  pbod(1).id = 1
-  pbod(1).mass = mstar
-  pbod(1).r = 0.0_rk
-  pbod(1).v = 0.0_rk
+  pbod(1)%id = 1
+  pbod(1)%mass = mstar
+  pbod(1)%r = 0.0_rk
+  pbod(1)%v = 0.0_rk
 
   ! These quantities are not used, but initialize to zero just in case
-  pbod(1).rhill = 0.0_rk
-  pbod(1).rphy = 0.0_rk
-  pbod(1).rdrag = 0.0_rk
-  pbod(1).rho = 0.0_rk
+  pbod(1)%rhill = 0.0_rk
+  pbod(1)%rphy = 0.0_rk
+  pbod(1)%rdrag = 0.0_rk
+  pbod(1)%rho = 0.0_rk
 
   ! For each body read mass, heliocentric position and velocity, Hill radius, physical radius, density and drag radius
-  ! depending on the values of param.lclose and param.lgas
-  if(param.lclose) then
+  ! depending on the values of param%lclose and param%lgas
+  if(param%lclose) then
 
-    if(param.lgas) then
+    if(param%lgas) then
 
       do j = 2, nbod
 
-        read(iu,'(1x,i7)')          pbod(j).id
-        read(iu,'(5(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill, pbod(j).rphy, pbod(j).rdrag, pbod(j).rho
-        read(iu,'(3(1x,1pe22.15))') pbod(j).r
-        read(iu,'(3(1x,1pe22.15))') pbod(j).v
+        read(iu,'(1x,i7)')          pbod(j)%id
+        read(iu,'(5(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill, pbod(j)%rphy, pbod(j)%rdrag, pbod(j)%rho
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -419,10 +419,10 @@ contains
 
       do j = 2, nbod
 
-        read(iu,'(1x,i7)')          pbod(j).id
-        read(iu,'(3(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill, pbod(j).rphy
-        read(iu,'(3(1x,1pe22.15))') pbod(j).r
-        read(iu,'(3(1x,1pe22.15))') pbod(j).v
+        read(iu,'(1x,i7)')          pbod(j)%id
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill, pbod(j)%rphy
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -430,14 +430,14 @@ contains
 
   else
 
-    if(param.lgas) then
+    if(param%lgas) then
 
       do j = 2, nbod
 
-        read(iu,'(1x,i7)')          pbod(j).id
-        read(iu,'(4(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill, pbod(j).rdrag, pbod(j).rho
-        read(iu,'(3(1x,1pe22.15))') pbod(j).r
-        read(iu,'(3(1x,1pe22.15))') pbod(j).v
+        read(iu,'(1x,i7)')          pbod(j)%id
+        read(iu,'(4(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill, pbod(j)%rdrag, pbod(j)%rho
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -445,10 +445,10 @@ contains
 
       do j = 2, nbod
 
-        read(iu,'(1x,i7)')          pbod(j).id
-        read(iu,'(2(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill
-        read(iu,'(3(1x,1pe22.15))') pbod(j).r
-        read(iu,'(3(1x,1pe22.15))') pbod(j).v
+        read(iu,'(1x,i7)')          pbod(j)%id
+        read(iu,'(2(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        read(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -462,7 +462,7 @@ contains
   call util_nbodm(param, nbod, nbodm, pbod)
 
   ! Open and read in gap parameters
-  call io_open(iu, param.paramfile, "OLD", "FORMATTED", ierr)
+  call io_open(iu, param%paramfile, "OLD", "FORMATTED", ierr)
   read(unit = iu, nml = gap_params)
   close(unit = iu)
 
@@ -471,14 +471,14 @@ contains
 
     do i = 1, nbodm
 
-      pbod(i).lgap = .false.
+      pbod(i)%lgap = .false.
 
       do j = 1, ngap
 
         if(igap(j) == i) then
 
-          pbod(i).lgap = .true.
-          pbod(i).wgap = fwgap(j)
+          pbod(i)%lgap = .true.
+          pbod(i)%wgap = fwgap(j)
 
         end if
 
@@ -490,7 +490,7 @@ contains
 
     do i = 1, nbodm
 
-      pbod(i).lgap = .false.
+      pbod(i)%lgap = .false.
 
     end do
 
@@ -501,7 +501,7 @@ contains
   !ibad = 0
   !do j = 2, nbod
   !
-  !  rhrat = pbod(j).rhill/rhill(j)
+  !  rhrat = pbod(j)%rhill/rhill(j)
   !  if((rhrat > 2.0_rk) .or. (rhrat < 0.5_rk)) ibad = ibad + 1
   !
   !end do
@@ -568,7 +568,7 @@ contains
   !$OMP END PARALLEL DO
 
   ! Open parameter file
-  open(unit = 7, file = trim(adjustl(param.paramfile)), status = "OLD")
+  open(unit = 7, file = trim(adjustl(param%paramfile)), status = "OLD")
   read(unit = 7, nml = sim_params)
   read(unit = 7, nml = stellar_params)
   read(unit = 7, nml = symba_params)
@@ -595,7 +595,7 @@ contains
   close(unit = 8)
 
   ! Store updated value of outstat in param
-  param.outstat = outstat
+  param%outstat = outstat
 
   return
   end subroutine io_dump_param
@@ -636,20 +636,20 @@ contains
   call io_open(iu, dplfile, "UNKNOWN", "FORMATTED", ierr)
 
   ! Write number of bodies, and the mass of the central body
-  write(iu,'(1x,i7,1x,1pe22.15)') nbod, pbod(1).mass
+  write(iu,'(1x,i7,1x,1pe22.15)') nbod, pbod(1)%mass
 
   ! For each body write mass, heliocentric position and velocity, Hill radius, physical radius, density and drag radius
-  ! depending on the values of param.lclose and param.lgas
-  if(param.lclose) then
+  ! depending on the values of param%lclose and param%lgas
+  if(param%lclose) then
 
-    if(param.lgas) then
+    if(param%lgas) then
 
       do j = 2, nbod
 
-        write(iu,'(1x,i7)')          pbod(j).id
-        write(iu,'(5(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill, pbod(j).rphy, pbod(j).rdrag, pbod(j).rho
-        write(iu,'(3(1x,1pe22.15))') pbod(j).r
-        write(iu,'(3(1x,1pe22.15))') pbod(j).v
+        write(iu,'(1x,i7)')          pbod(j)%id
+        write(iu,'(5(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill, pbod(j)%rphy, pbod(j)%rdrag, pbod(j)%rho
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -657,10 +657,10 @@ contains
 
       do j = 2, nbod
 
-        write(iu,'(1x,i7)')          pbod(j).id
-        write(iu,'(3(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill, pbod(j).rphy
-        write(iu,'(3(1x,1pe22.15))') pbod(j).r
-        write(iu,'(3(1x,1pe22.15))') pbod(j).v
+        write(iu,'(1x,i7)')          pbod(j)%id
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill, pbod(j)%rphy
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -668,14 +668,14 @@ contains
 
   else
 
-    if(param.lgas) then
+    if(param%lgas) then
 
       do j = 2, nbod
 
-        write(iu,'(1x,i7)')          pbod(j).id
-        write(iu,'(4(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill, pbod(j).rdrag, pbod(j).rho
-        write(iu,'(3(1x,1pe22.15))') pbod(j).r
-        write(iu,'(3(1x,1pe22.15))') pbod(j).v
+        write(iu,'(1x,i7)')          pbod(j)%id
+        write(iu,'(4(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill, pbod(j)%rdrag, pbod(j)%rho
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -683,10 +683,10 @@ contains
 
       do j = 2, nbod
 
-        write(iu,'(1x,i7)')          pbod(j).id
-        write(iu,'(2(1x,1pe22.15))') pbod(j).mass, pbod(j).rhill
-        write(iu,'(3(1x,1pe22.15))') pbod(j).r
-        write(iu,'(3(1x,1pe22.15))') pbod(j).v
+        write(iu,'(1x,i7)')          pbod(j)%id
+        write(iu,'(2(1x,1pe22.15))') pbod(j)%mass, pbod(j)%rhill
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%r
+        write(iu,'(3(1x,1pe22.15))') pbod(j)%v
 
       end do
 
@@ -1349,30 +1349,30 @@ contains
   if(lfirst) then
 
     ! Set FXDR flag, to select FXDR routines
-    lfxdr = ((param.outtype == "FXDR4") .or. (param.outtype == "FXDR8"))
+    lfxdr = ((param%outtype == "FXDR4") .or. (param%outtype == "FXDR8"))
 
     ! Are we appending to an existing file?
-    if(param.outstat == "APPEND") THEN
+    if(param%outstat == "APPEND") THEN
 
       ! Use FXDR routine open routine if lfxdr is set
       if(lfxdr) then
 
-        call io_open_fxdr(param.outfile, "A", .TRUE., iu, ierr)
+        call io_open_fxdr(param%outfile, "A", .TRUE., iu, ierr)
 
       ! Otherwise use default open routine
       else
 
-        call io_open(iu, param.outfile, param.outstat, "UNFORMATTED", ierr)
+        call io_open(iu, param%outfile, param%outstat, "UNFORMATTED", ierr)
 
       end if
 
     ! Create a new file, as long as the file does not already exist
-    else if(param.outstat == "NEW") THEN
+    else if(param%outstat == "NEW") THEN
 
       ! Use FXDR routine open routine if lfxdr is set
       if(lfxdr) then
 
-        call io_open_fxdr(param.outfile, "R", .TRUE., iu, ierr)
+        call io_open_fxdr(param%outfile, "R", .TRUE., iu, ierr)
 
         if(ierr == 0) then
 
@@ -1382,12 +1382,12 @@ contains
 
         end if
 
-        call io_open_fxdr(param.outfile, "W", .TRUE., iu, ierr)
+        call io_open_fxdr(param%outfile, "W", .TRUE., iu, ierr)
 
       ! Otherwise use default open routine
       else
 
-        call io_open(iu, param.outfile, param.outstat, "UNFORMATTED", ierr)
+        call io_open(iu, param%outfile, param%outstat, "UNFORMATTED", ierr)
 
         if(ierr /= 0) then
 
@@ -1405,12 +1405,12 @@ contains
       ! Use FXDR routine open routine if lfxdr is set
       if(lfxdr) then
 
-        call io_open_fxdr(param.outfile, "W", .TRUE., iu, ierr)
+        call io_open_fxdr(param%outfile, "W", .TRUE., iu, ierr)
 
       ! Otherwise use default open routine
       else
 
-        call io_open(iu, param.outfile, "REPLACE", "UNFORMATTED", ierr)
+        call io_open(iu, param%outfile, "REPLACE", "UNFORMATTED", ierr)
 
       end if
 
@@ -1432,12 +1432,12 @@ contains
     ! Use FXDR routine open routine if lfxdr is set
     if(lfxdr) then
 
-      call io_open_fxdr(param.outfile, "A", .TRUE., iu, ierr)
+      call io_open_fxdr(param%outfile, "A", .TRUE., iu, ierr)
 
     ! Otherwise use default open routine
     else
 
-      call io_open(iu, param.outfile, "APPEND", "UNFORMATTED", ierr)
+      call io_open(iu, param%outfile, "APPEND", "UNFORMATTED", ierr)
 
     end if
 
@@ -1458,33 +1458,33 @@ contains
   !     Also, the SWIFTER template permits reading an optional mass
   !     (and rdrag?) entry.
   ntp = 0
-  call io_write_hdr(iu, t, nbod, ntp, param.ioutform, param.outtype)
+  call io_write_hdr(iu, t, nbod, ntp, param%ioutform, param%outtype)
 
   ! Select the output form (also borrowed from SWIFTER)
-  select case(param.ioutform)
+  select case(param%ioutform)
 
     ! Output osculating Keplerian orbital elements
     case(EL)
 
       ! Convert Cartesian positions and velocities to osculating Keplerian orbital elements
-      mu = pbod(1).mass
+      mu = pbod(1)%mass
       !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) PRIVATE(i, gm) FIRSTPRIVATE(ialpha, mu) &
       !$OMP SHARED(nbod, pbod, a, e, inc, capom, omega, capm)
       do i = 2, nbod
 
-        gm = mu + pbod(i).mass
-        call orbel_xv2el(pbod(i).r, pbod(i).v, gm, ialpha, a(i), e(i), inc(i), capom(i), omega(i), capm(i))
+        gm = mu + pbod(i)%mass
+        call orbel_xv2el(pbod(i)%r, pbod(i)%v, gm, ialpha, a(i), e(i), inc(i), capom(i), omega(i), capm(i))
 
       end do
       !$OMP END PARALLEL DO
 
-      ! Write osculating Keplerian orbital elements, mass and drag radius (depending on the value of param.lgas)
-      if(param.lgas) then
+      ! Write osculating Keplerian orbital elements, mass and drag radius (depending on the value of param%lgas)
+      if(param%lgas) then
 
         do i = 2, nbod
 
-          call io_write_line(iu, -pbod(i).id, a(i), e(i), inc(i), capom(i), omega(i), capm(i), param.outtype, &
-          mass = pbod(i).mass, radius = pbod(i).rdrag)
+          call io_write_line(iu, -pbod(i)%id, a(i), e(i), inc(i), capom(i), omega(i), capm(i), param%outtype, &
+          mass = pbod(i)%mass, radius = pbod(i)%rdrag)
 
         end do
 
@@ -1492,8 +1492,8 @@ contains
 
         do i = 2, nbod
 
-          call io_write_line(iu, -pbod(i).id, a(i), e(i), inc(i), capom(i), omega(i), capm(i), param.outtype, &
-          mass = pbod(i).mass)
+          call io_write_line(iu, -pbod(i)%id, a(i), e(i), inc(i), capom(i), omega(i), capm(i), param%outtype, &
+          mass = pbod(i)%mass)
 
         end do
 
@@ -1502,13 +1502,13 @@ contains
     ! Output Cartesian positions and velocities
     case(XV)
 
-      ! Write Cartesian positions, velocities, mass and drag radius (depending on the value of param.lgas)
-      if(param.lgas) then
+      ! Write Cartesian positions, velocities, mass and drag radius (depending on the value of param%lgas)
+      if(param%lgas) then
 
         do i = 2, nbod
 
-          call io_write_line(iu, -pbod(i).id, pbod(i).r(1), pbod(i).r(2), pbod(i).r(3), pbod(i).v(1), pbod(i).v(2), pbod(i).v(3), &
-          param.outtype, mass = pbod(i).mass, radius = pbod(i).rdrag)
+          call io_write_line(iu, -pbod(i)%id, pbod(i)%r(1), pbod(i)%r(2), pbod(i)%r(3), pbod(i)%v(1), pbod(i)%v(2), pbod(i)%v(3), &
+          param%outtype, mass = pbod(i)%mass, radius = pbod(i)%rdrag)
 
         end do
 
@@ -1516,8 +1516,8 @@ contains
 
         do i = 2, nbod
 
-          call io_write_line(iu, -pbod(i).id, pbod(i).r(1), pbod(i).r(2), pbod(i).r(3), pbod(i).v(1), pbod(i).v(2), pbod(i).v(3), &
-          param.outtype, mass = pbod(i).mass)
+          call io_write_line(iu, -pbod(i)%id, pbod(i)%r(1), pbod(i)%r(2), pbod(i)%r(3), pbod(i)%v(1), pbod(i)%v(2), pbod(i)%v(3), &
+          param%outtype, mass = pbod(i)%mass)
 
         end do
 
@@ -1594,7 +1594,7 @@ contains
   ! Write current values of the total energy and angular momentum to energy.out
   if(lfirst) then
 
-    call io_open(iu, trim(outfile), param.outstat, "FORMATTED", ierr)
+    call io_open(iu, trim(outfile), param%outstat, "FORMATTED", ierr)
 
     if(ierr /= 0) then
 
@@ -1691,9 +1691,9 @@ contains
 
   ! Write discard information to discard file
   write(iu,'(1x,1pe22.15,1x,i4)') time, iwhy
-  write(iu,'("-1",1x,i6,1x,2(1x,1pe22.15))') pbod.id, pbod.mass, pbod.rphy
-  write(iu,'(3(1x,1pe22.15))') pbod.r
-  write(iu,'(3(1x,1pe22.15))') pbod.v
+  write(iu,'("-1",1x,i6,1x,2(1x,1pe22.15))') pbod%id, pbod%mass, pbod%rphy
+  write(iu,'(3(1x,1pe22.15))') pbod%r
+  write(iu,'(3(1x,1pe22.15))') pbod%v
 
   ! Close discard file
   close(unit = iu)
@@ -1765,17 +1765,17 @@ contains
 
   write(iu,'(1x,1pe22.15,"  2")') time
 
-  write(iu,'("-1",1x,i6,1x,2(1x,1pe22.15))') pbod1.id, pbod1.mass, pbod1.rphy
-  write(iu,'(3(1x,1pe22.15))') pbod1.r
-  write(iu,'(3(1x,1pe22.15))') pbod1.v
+  write(iu,'("-1",1x,i6,1x,2(1x,1pe22.15))') pbod1%id, pbod1%mass, pbod1%rphy
+  write(iu,'(3(1x,1pe22.15))') pbod1%r
+  write(iu,'(3(1x,1pe22.15))') pbod1%v
 
-  write(iu,'("-1",1x,i6,1x,2(1x,1pe22.15))') pbod2.id, pbod2.mass, pbod2.rphy
-  write(iu,'(3(1x,1pe22.15))') pbod2.r
-  write(iu,'(3(1x,1pe22.15))') pbod2.v
+  write(iu,'("-1",1x,i6,1x,2(1x,1pe22.15))') pbod2%id, pbod2%mass, pbod2%rphy
+  write(iu,'(3(1x,1pe22.15))') pbod2%r
+  write(iu,'(3(1x,1pe22.15))') pbod2%v
 
-  write(iu,'("+1",1x,i6,1x,2(1x,1pe22.15))') pbodn.id, pbodn.mass, pbodn.rphy
-  write(iu,'(3(1x,1pe22.15))') pbodn.r
-  write(iu,'(3(1x,1pe22.15))') pbodn.r
+  write(iu,'("+1",1x,i6,1x,2(1x,1pe22.15))') pbodn%id, pbodn%mass, pbodn%rphy
+  write(iu,'(3(1x,1pe22.15))') pbodn%r
+  write(iu,'(3(1x,1pe22.15))') pbodn%r
 
   close(unit = iu)
 

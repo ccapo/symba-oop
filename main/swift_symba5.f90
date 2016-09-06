@@ -96,31 +96,31 @@ call io_init_param(paramfile, param)
 call io_init_pl_symba(plfile, param, nbod, nbodm, pbod)
 
 ! Set initial time and times for first output and dump
-t = param.t0
-tout = param.t0 + param.dtout
-tdump = param.t0 + param.dtdump
+t = param%t0
+tout = param%t0 + param%dtout
+tdump = param%t0 + param%dtdump
 
 ! Do the initial write to binary file
 call io_write_frame(param, t, nbod, pbod)
 
 ! If we are following the energy and angular momentum of the system,
 ! then compute and write initial values to energy.dat
-if(param.lenergy) call io_write_energy(param, t, nbod, nbodm, pbod, eoffset)
+if(param%lenergy) call io_write_energy(param, t, nbod, nbodm, pbod, eoffset)
 
 ! *** Start the Main Loop ***
 write(*,'(/,a,/)') " ************** BEGIN MAIN LOOP ******************"
 
 ! Loop until we reach tstop, and while there is more than one body in the system
-do while((t <= param.tstop) .and. (nbod > 1))
+do while((t <= param%tstop) .and. (nbod > 1))
 
   ! Perform a single step
   call symba5_step(param, t, nbod, nbodm, pbod, pmerge, eoffset)
 
   ! Update time
-  t = t + param.dt
+  t = t + param%dt
 
   ! Check if any bodies need to be removed from the simulation
-  if(param.lclose) then
+  if(param%lclose) then
 
     ! Store current number of bodies
     nbod_old = nbod
@@ -140,7 +140,7 @@ do while((t <= param.tstop) .and. (nbod > 1))
     call io_write_frame(param, t, nbod, pbod)
 
     ! Update output time
-    tout = tout + param.dtout
+    tout = tout + param%dtout
 
   end if
 
@@ -148,7 +148,7 @@ do while((t <= param.tstop) .and. (nbod > 1))
   if(t >= tdump) then
 
     ! Print current status of the simulation
-    tfraction = (t - param.t0)/(param.tstop - param.t0)
+    tfraction = (t - param%t0)/(param%tstop - param%t0)
     write(*,'(a,1pe12.5,a,0pf6.3,a,i9)') " Time = ", t, "; Fraction complete =", tfraction, "; Number of bodies = ", nbod
 
     ! Dump position and velocity of all the bodies, along with the simulation parameters
@@ -156,11 +156,11 @@ do while((t <= param.tstop) .and. (nbod > 1))
     call io_dump_param(dumpparamfile, param, t)
 
     ! Update dump time
-    tdump = tdump + param.dtdump
+    tdump = tdump + param%dtdump
 
     ! If we are following the energy and angular momentum of the system,
     ! then compute and append to energy.dat
-    if(param.lenergy) call io_write_energy(param, t, nbod, nbodm, pbod, eoffset)
+    if(param%lenergy) call io_write_energy(param, t, nbod, nbodm, pbod, eoffset)
 
   end if
 
@@ -170,7 +170,7 @@ end do
 write(*,'(/,a)') " *************** END MAIN LOOP *******************"
 
 ! Do a final dump of the position and velocity of all the bodies, and the simulation parameters for possible resumption
-t = param.tstop
+t = param%tstop
 call io_dump_pl_symba(dumpplfile, param, nbod, pbod)
 call io_dump_param(dumpparamfile, param, t)
 

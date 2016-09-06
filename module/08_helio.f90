@@ -47,7 +47,7 @@ contains
   !-----------------!
 
   ! Store the inverse of the mass of the central body, and initialize the momentum
-  mstar = pbod(1).mass
+  mstar = pbod(1)%mass
   px = 0.0_rk
   py = 0.0_rk
   pz = 0.0_rk
@@ -64,12 +64,12 @@ contains
   !$OMP DO SCHEDULE(STATIC) REDUCTION(+ : px, py, pz)
   do i = 2, nbod
 
-    px = px + pbod(i).mass*pbod(i).v(1)
-    py = py + pbod(i).mass*pbod(i).v(2)
-    pz = pz + pbod(i).mass*pbod(i).v(3)
-    !px = util_kahan_sum(px, pbod(i).mass*pbod(i).v(1), pxerr)
-    !py = util_kahan_sum(py, pbod(i).mass*pbod(i).v(2), pyerr)
-    !pz = util_kahan_sum(pz, pbod(i).mass*pbod(i).v(3), pzerr)
+    px = px + pbod(i)%mass*pbod(i)%v(1)
+    py = py + pbod(i)%mass*pbod(i)%v(2)
+    pz = pz + pbod(i)%mass*pbod(i)%v(3)
+    !px = util_kahan_sum(px, pbod(i)%mass*pbod(i)%v(1), pxerr)
+    !py = util_kahan_sum(py, pbod(i)%mass*pbod(i)%v(2), pyerr)
+    !pz = util_kahan_sum(pz, pbod(i)%mass*pbod(i)%v(3), pzerr)
 
   end do
   !$OMP END DO
@@ -80,7 +80,7 @@ contains
   !$OMP DO SCHEDULE(STATIC)
   do i = 2, nbod
 
-    if(pbod(i).mass /= 0.0_rk) pbod(i).r = pbod(i).r + ptmp*dtau
+    if(pbod(i)%mass /= 0.0_rk) pbod(i)%r = pbod(i)%r + ptmp*dtau
 
   end do
   !$OMP END DO NOWAIT
@@ -127,7 +127,7 @@ contains
   !-----------------!
 
   ! Store the mass of the central body, and set its flag (which should not be used)
-  mstar = pbod(1).mass
+  mstar = pbod(1)%mass
   iflag(1) = 0
 
   ! Take a drift forward dtau
@@ -135,7 +135,7 @@ contains
   do i = 2, nbod
 
     iflag(i) = 0
-    if(pbod(i).mass /= 0.0_rk) call drift_one(mstar, pbod(i).r, pbod(i).v, dtau, iflag(i))
+    if(pbod(i)%mass /= 0.0_rk) call drift_one(mstar, pbod(i)%r, pbod(i)%v, dtau, iflag(i))
 
   end do
   !$OMP END PARALLEL DO
@@ -150,8 +150,8 @@ contains
         write(*,'(a)')              "SWIFT Error:: helio_drift"
         write(*,'(a,i7,a)')         "Particle:    ", i, " is lost!!!!!!!!!"
         write(*,'(a,2(1pe14.6))')   "Mass, dt:    ", mstar, dtau
-        write(*,'(a,3(1pe14.6))')   "Helio. pos.: ", pbod(i).r
-        write(*,'(a,3(1pe14.6),/)') "Bary. vel.:  ", pbod(i).v
+        write(*,'(a,3(1pe14.6))')   "Helio. pos.: ", pbod(i)%r
+        write(*,'(a,3(1pe14.6),/)') "Bary. vel.:  ", pbod(i)%v
 
       end if
 
@@ -202,7 +202,7 @@ contains
   !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) PRIVATE(i) FIRSTPRIVATE(dtau) SHARED(nbod, pbod)
   do i = 2, nbod
 
-    pbod(i).v = pbod(i).v + pbod(i).a*dtau
+    pbod(i)%v = pbod(i)%v + pbod(i)%a*dtau
 
   end do
   !$OMP END PARALLEL DO

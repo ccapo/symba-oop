@@ -1,5 +1,5 @@
+-1                           ! seed value (negative value will use system time)
 5.0 15.0 1.0			! amin (AU), amax (AU), surface density power law
--563981				! seed
 4 1.0				! Big guys: nbig, rho(g/cm^3)
 1.0 50.0 0.0 0.0 0.0 0.0 0.0 	! m (M_Earth), a (AU), e, i (deg), OM (deg), om (deg), M (deg)
 1.0 61.0 0.0 0.0 0.0 0.0 0.0 	! m (M_Earth), a (AU), e, i (deg), OM (deg), om (deg), M (deg)

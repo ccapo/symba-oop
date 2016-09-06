@@ -107,7 +107,7 @@ contains
   !-----------------!
 
   ! Announce merger event
-  write(*,'(2(a,i6),a,1pe12.5)') " Merging bodies: ", pbodi.id, " and ", pbodj.id, " at t = ", time
+  write(*,'(2(a,i6),a,1pe12.5)') " Merging bodies: ", pbodi%id, " and ", pbodj%id, " at t = ", time
 
   ! Make a copy of the relevant quantities for both bodies
   pbodi_org = pbodi
@@ -115,50 +115,50 @@ contains
 
   ! Note: I am just putting these particles together here, which is clearly wrong.
   !       I should integrate back to the time of close approach, then merge them.
-  pbodi.mass = pbodi_org.mass + pbodj_org.mass
-  pbodi.rphy = (pbodi_org.rphy**3 + pbodj_org.rphy**3)**(1.0_rk/3.0_rk)
-  pbodi.rhill = util_hills_one(mstar, pbodi)
-  pbodi.v = (pbodi_org.mass*pbodi_org.v + pbodj_org.mass*pbodj_org.v)/pbodi.mass
+  pbodi%mass = pbodi_org%mass + pbodj_org%mass
+  pbodi%rphy = (pbodi_org%rphy**3 + pbodj_org%rphy**3)**(1.0_rk/3.0_rk)
+  pbodi%rhill = util_hills_one(mstar, pbodi)
+  pbodi%v = (pbodi_org%mass*pbodi_org%v + pbodj_org%mass*pbodj_org%v)/pbodi%mass
 
   ! Put in zeros for body pbodj
-  pbodj.mass = 0.0_rk
-  pbodj.rphy = 0.0_rk
-  pbodj.rhill = 0.0_rk
-  pbodj.rdrag = 0.0_rk
-  pbodj.rho = 0.0_rk
-  pbodj.v = 0.0_rk
-  pbodj.r = 1.0e10_rk*pbodj_org.r ! So Danby does not fail
+  pbodj%mass = 0.0_rk
+  pbodj%rphy = 0.0_rk
+  pbodj%rhill = 0.0_rk
+  pbodj%rdrag = 0.0_rk
+  pbodj%rho = 0.0_rk
+  pbodj%v = 0.0_rk
+  pbodj%r = 1.0e10_rk*pbodj_org%r ! So Danby does not fail
 
   ! Write merger information to discard_mass.dat
   call io_discard_merge(time, pbodi_org, pbodj_org, pbodi)
 
   ! If body pbodj is a massive body, decrease nbodm by one
-  !if(pbodj.id <= nbodm) nbodm = nbodm - 1
+  !if(pbodj%id <= nbodm) nbodm = nbodm - 1
 
   ! Remove body pbodj from the encounter list for each massive body
   do i = 2, nbodm
 
     ! Skip if there are no entries in the encounter list for massive body pbodi
-    if(penc(i).nenc > 0) then
+    if(penc(i)%nenc > 0) then
 
       ! Loop over all the entries in the encounter list for massive body pbodi
-      inner: do j = 1, penc(i).nenc
+      inner: do j = 1, penc(i)%nenc
 
         ! Search for entries that match the identifier of body pbodj
-        if(penc(i).ienc(j) == pbodj.id) then
+        if(penc(i)%ienc(j) == pbodj%id) then
 
-          if(j < penc(i).nenc) then
+          if(j < penc(i)%nenc) then
 
-            do k = j, penc(i).nenc - 1
+            do k = j, penc(i)%nenc - 1
 
-              penc(i).ienc(k) = penc(i).ienc(k + 1)
+              penc(i)%ienc(k) = penc(i)%ienc(k + 1)
 
             end do
 
           end if
 
           ! Decrease the number of encounters by one
-          penc(i).nenc = penc(i).nenc - 1
+          penc(i)%nenc = penc(i)%nenc - 1
 
           ! Exit the inner do loop now that we have found the entry for body pbodj
           ! in the encounter list for massive body pbodi
@@ -188,7 +188,7 @@ contains
   !         iwhy(nbod) ==> Status for bodies
   !
   ! Output: iwhy(nbod) ==> Status for bodies
-  !         pbod.iperi ==> Perhelion status flag
+  !         pbod%iperi ==> Perhelion status flag
   !                        - iperi = -1 if body is before perhelion
   !                        - iperi =  0 if body went through perihelion
   !                        - iperi = +1 if body is after perihelion
@@ -239,7 +239,7 @@ contains
     !$OMP SHARED(nbod, pbod, lperi, peri, iwhy)
     do i = 2, nbod
 
-      if(lperi(i) .and. (.not. pbod(i).lenc) .and. (peri(i) <= param.qmin)) then
+      if(lperi(i) .and. (.not. pbod(i)%lenc) .and. (peri(i) <= param%qmin)) then
 
         write(*,'(a,i7,a,1pe14.6)') ' Particle ', i, ' perihelion distance too small at t = ', time
         iwhy(i) = -4
@@ -305,15 +305,15 @@ contains
   do i = 2, nbodm
 
     ! Dot product between heliocentric position and velocity
-    vdotr = dot_product(pbod(i).r, pbod(i).v)
+    vdotr = dot_product(pbod(i)%r, pbod(i)%v)
 
     if(vdotr > 0.0_rk) then
 
-      pbod(i).iperi = 1
+      pbod(i)%iperi = 1
 
     else
 
-      pbod(i).iperi = -1
+      pbod(i)%iperi = -1
 
     end if
 
@@ -350,19 +350,19 @@ contains
   !$OMP END PARALLEL DO
 
   ! Now check if any other bodies need to be removed because of their distance, or energetics
-  if((param.rmin >= 0.0_rk) .or. (param.rmax >= 0.0_rk) .or. (param.rmaxu >= 0.0_rk)) then
+  if((param%rmin >= 0.0_rk) .or. (param%rmax >= 0.0_rk) .or. (param%rmaxu >= 0.0_rk)) then
 
-    rmin2 = param.rmin**2
-    rmax2 = param.rmax**2
-    rmaxu2 = param.rmaxu**2
+    rmin2 = param%rmin**2
+    rmax2 = param%rmax**2
+    rmaxu2 = param%rmaxu**2
 
     ! Convert from heliocentric => barycentric
     call coord_h2b(param, nbod, p, msys)
 
     ! Restore coordinate flags to their previous values
-    param.lhelio = .true.
-    param.lbary = .false.
-    param.lcanon = .false.
+    param%lhelio = .true.
+    param%lbary = .false.
+    param%lcanon = .false.
 
     ! For each body, check each of the three criteria for removal
     !$OMP PARALLEL DO SCHEDULE(STATIC) DEFAULT(NONE) PRIVATE(i, rh2, rb2, vb2, energy) &
@@ -370,39 +370,39 @@ contains
     do i = 2, nbod
 
       ! Square of heliocentric distance
-      rh2 = sum(pbod(i).r**2)
+      rh2 = sum(pbod(i)%r**2)
 
       ! Too far from central body
-      if((param.rmax >= 0.0_rk) .and. (rh2 > rmax2)) then
+      if((param%rmax >= 0.0_rk) .and. (rh2 > rmax2)) then
 
         write(*,'(a,i7,a,1pe14.6)') ' Particle ', i, ' too far from the central body at t = ', time
-        write(*,'(4(1pe14.6))') pbod(i).r, sqrt(rh2)
+        write(*,'(4(1pe14.6))') pbod(i)%r, sqrt(rh2)
         iwhy(i) = -3
 
       end if
 
       ! Too close to the central body
-      if((param.rmin >= 0.0_rk) .and. (rh2 < rmin2)) then
+      if((param%rmin >= 0.0_rk) .and. (rh2 < rmin2)) then
 
         write(*,'(a,i7,a,1pe14.6)') ' Particle ', i, ' too close to the central body at t = ', time
-        write(*,'(4(1pe14.6))') pbod(i).r, sqrt(rh2)
+        write(*,'(4(1pe14.6))') pbod(i)%r, sqrt(rh2)
         iwhy(i) = 1
 
       end if
 
       ! If body i did not have an encounter, or wasn't removed for either of the two reasons above
-      if((.not. p(i).lenc) .and. (param.rmaxu >= 0.0_rk) .and. (iwhy(i) == 0)) then
+      if((.not. p(i)%lenc) .and. (param%rmaxu >= 0.0_rk) .and. (iwhy(i) == 0)) then
 
         ! Compute distance, velocity and energy with respect to the barycentre
-        rb2 = sum(p(i).r**2)
-        vb2 = sum(p(i).v**2)
+        rb2 = sum(p(i)%r**2)
+        vb2 = sum(p(i)%v**2)
         energy = 0.5_rk*vb2 - msys/sqrt(rb2)
 
         ! Unbound and too far from barycentre
         if((energy > 0.0_rk) .and. (rb2 > rmaxu2)) then
 
           write(*,'(a,i7,a,1pe14.6)') ' Particle ', i, ' is unbound and too far from barycentre at t = ', time
-          write(*,'(5(1pe14.6))') p(i).r, sqrt(rb2), energy
+          write(*,'(5(1pe14.6))') p(i)%r, sqrt(rb2), energy
           iwhy(i) = -2
 
         end if
@@ -415,7 +415,7 @@ contains
   end if
 
   ! Check if any body should be removed if its perihelion distance is less than qmin
-  if(param.qmin >= 0.0_rk) call discard_mass_peri(param, time, nbod, pbod, iwhy)
+  if(param%qmin >= 0.0_rk) call discard_mass_peri(param, time, nbod, pbod, iwhy)
 
   ! If any particles have been flagged for removal
   if(any(iwhy /= 0)) then
@@ -423,7 +423,7 @@ contains
     ! If we are following the energy of the system
     ! Compute the total energy of the system *before* removal
     ! This will not include the merger entries, since they have already been removed
-    if(param.lenergy) call anal_energy(param, nbod, nbodm, pbod, ke, pot, ei, l)
+    if(param%lenergy) call anal_energy(param, nbod, nbodm, pbod, ke, pot, ei, l)
 
     ! Locate each body flagged for removal
     do i = 2, nbod
@@ -463,7 +463,7 @@ contains
 
   ! If any particles have been flagged for removal,
   ! and if we are following the energy of the system
-  if(any(iwhy /= 0) .and. param.lenergy) then
+  if(any(iwhy /= 0) .and. param%lenergy) then
 
     ! Compute the total energy of the system *after* removal
     call anal_energy(param, nbod, nbodm, pbod, ke, pot, ef, l)

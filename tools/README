@@ -53,8 +53,8 @@ is identical in form to other 'pl.in' files used by SYMBA5.
 
 *************************** gen_ray_size.in **********************************
 
+563981		! seed
 4. 6. 1.5	! amin (AU), amax (AU), surface density power law
--563981		! iseed
 1 1.0				! Big guys: nbig, rho(g/cm^3)
 1.d0 5.0 2.e-6 1.e-6 0. 0.0 0.0 ! m (M_Earth), a (AU), e, i (deg), OM (deg), om (deg), M (deg)
 
