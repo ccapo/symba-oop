@@ -10,3 +10,12 @@ circumstellar gaseous disk.
 This code makes use of the object oriented paradigm, and has also been
 parallelized using OpenMP directives, but is only designed to handle scenarios
 where the number of large massive bodies are less than 1000.
+
+This code requires the following to be installed: 
+Intel or GNU Fortran compiler
+GNU C compiler (Optional, for fxdr binary output library)
+bash (Optional)
+gnuplot (Optional)
+ImageMagick (Optional)
+ps2pdf (Optional)
+ffmpeg (Optional)

@@ -27,13 +27,13 @@
 #******************************************************************************
 
 # System utilities
-SHELL           = /bin/csh
+SHELL           = /bin/bash
 INSTALL         = install
 INSTALL_PROGRAM = $(INSTALL) -m 755
 INSTALL_DATA    = $(INSTALL) -m 644
 
 # SWIFT definitions
-SWIFT_HOME      = $(HOME)/programs/symba-oop
+SWIFT_HOME      = $(HOME)/symba-oop
 
 # Compiler definitions
 FORTRAN         = gfortran
@@ -49,12 +49,10 @@ RANLIB          = ranlib
 
 # DO NOT include in FFLAGS the "-c" option to compile object only
 # this is done explicitly as needed in the Makefile
-# -ipo <== Removed for SciNet GPC, gave several errors about 'unresolved' or 'undefined reference' to functions and subroutines
 #FFLAGS          = -O3 -xHOST -ip -align all -pad -opt-prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model strict -prec-div -prec-sqrt -no-ftz -openmp
-FFLAGS          = -O2 -w -ffixed-line-length-132 -fopenmp
+FFLAGS          = -O2 -ffixed-line-length-132 -fopenmp
 
 # Use the following compiler flags to enable symbol information for debugger (idb)
-# -ipo <== Removed for SciNet GPC, gave several errors about 'unresolved' or 'undefined reference' to functions and subroutine
 #FFLAGS          = -O0 -xHOST -ip -align all -pad -opt-prefetch -assume protect-parens -unroll-aggressive -funroll-loops -fp-model strict -prec-div -prec-sqrt -no-ftz -C -g -traceback -fp-stack-check -openmp
 
 # DO NOT include in CFLAGS the "-c" option to compile object only

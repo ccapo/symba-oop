@@ -1,9 +1,9 @@
 &sim_params
  t0          = 0.0E+00      ! Initial time (years)
-,tstop       = 5.0E+01      ! Final time (years)
-,dt          = 3.90625E-03  ! Time step (years)
-,dtout       = 1.0E+01      ! Time interval between outputs (years)
-,dtdump      = 1.0E+01      ! Time interval between dumps (years)
+,tstop       = 2.7E+03      ! Final time (years)
+,dt          = 0.25E+00     ! Time step (years)
+,dtout       = 2.7E+01      ! Time interval between outputs (years)
+,dtdump      = 2.7E+01      ! Time interval between dumps (years)
 ,outfile     = "bin.dat"    ! Binary output filename
 ,outtype     = "REAL8"      ! Output file format [ REAL4 | REAL8 | FXDR4 | FXDR8 ]
 ,outform     = "EL"         ! Output form [ EL | XV ]
@@ -23,7 +23,7 @@
 /
 
 &symba_params
-mtiny = 0.1                 ! Smallest mass to self-gravitate (M_Earth)
+mtiny = 0.1E+00             ! Smallest mass to self-gravitate (M_Earth)
 /
 
 &gas_params

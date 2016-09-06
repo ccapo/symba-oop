@@ -352,16 +352,12 @@ end do
 
 if(tframe >= param%tstop) then
 
-  status = system("rm plsml.dat embryo.dat")
-  !status = system('rm embryo.dat')
-
   write(*,'(a)') '*** Make MPEG ***'
+  status = system("rm plsml.dat embryo.dat")
   !status = system("convert *.png movie.mpg >& /dev/null")
-  write(cmd,'(a15,f6.1,a29)') "convert -delay ", 100.0_rk*dtdelay, " *.png movie.mpg >& /dev/null"
+  write(cmd,'(a,f3.1,a)') "ffmpeg -r ", dtdelay, " -i 'frame_%04d.png' -y -r 25 'movie.mpg' >/dev/null 2>&1"
   !write(*,*) trim(cmd)
   status = system(trim(cmd))
-
-  write(*,'(a)') '*** Remove PNG ***'
   status = system("rm *.png")
 
 end if
