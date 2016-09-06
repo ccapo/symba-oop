@@ -19,3 +19,22 @@ gnuplot (Optional)
 ImageMagick (Optional)
 ps2pdf (Optional)
 ffmpeg (Optional)
+
+=============================================================================
+
+Before compiling:
+
+- Update the value of SWIFT_HOME in Makefile.Defines with the correct location of this directory
+- Ensure the file test_read_only.xdr in the fxdr directory has read-only permissions
+
+=============================================================================
+
+To compile:
+
+- make all
+
+To run the example:
+
+- Ensure a link to the programs and scripts in the bin directory exist
+- cd example; ./@run_swift
+- If gnuplot, imagemagick or ffmpeg are not installed, then comment out the last two lines
