@@ -12,7 +12,7 @@ parallelized using OpenMP directives, but is only designed to handle scenarios
 where the number of large massive bodies are less than 1000.
 
 This code requires the following to be installed: 
-Intel or GNU Fortran compiler
+Intel Fortran compiler v13+ or GNU Fortran compiler v4.8+
 GNU C compiler (Optional, for fxdr binary output library)
 bash (Optional)
 gnuplot (Optional)
