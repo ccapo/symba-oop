@@ -4,6 +4,12 @@ rm -f drag_size_gen
 rm -f gen_ray_size
 rm -f swift_symba5_gas
 rm -f follow_symba
+rm -f frame_symba
+rm -f @plot_frame
+
+rm -f *.dat
+rm -f pl.in
+rm -f movie.mpg
 
 ln -s ../bin/drag_size_gen .
 ln -s ../bin/gen_ray_size .
@@ -11,9 +17,6 @@ ln -s ../bin/swift_symba5_gas .
 ln -s ../bin/follow_symba .
 ln -s ../bin/frame_symba .
 ln -s ../bin/@plot_frame .
-
-rm -f *.dat
-rm -f pl.in
 
 ./drag_size_gen < drag_size_gen.in
 ./gen_ray_size < gen_ray_size.in
