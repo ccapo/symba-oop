@@ -25,6 +25,10 @@ Before compiling:
 
 - Update the value of SWIFT_HOME in Makefile.Defines with the correct location of this directory
 - Ensure the file test_read_only.xdr in the fxdr directory has read-only permissions
+- Set the stack size to be unlimited:
+  ulimit -s unlimited
+- It may be necessary to provide a larger OpenMP stack size:
+  export OMP_STACKSIZE=256m
 
 =============================================================================
 
