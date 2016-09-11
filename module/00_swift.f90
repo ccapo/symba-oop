@@ -52,14 +52,14 @@ integer(ik), parameter :: NLAG1 = 50, NLAG2 = 400
 real(rk), parameter :: TINY_NUMBER = 4.0e-15_rk
 
 ! Trignometric stuff
-real(rk), parameter :: PI = 3.14159265358979_rk
-real(rk), parameter :: TWOPI = 2.0_rk*pi
-real(rk), parameter :: PIBY2 = 0.5_rk*pi
-real(rk), parameter :: PI3BY2 = 1.5_rk*pi
-real(rk), parameter :: DEGRAD = 180.0_rk/pi
+real(rk), parameter :: PI = 3.14159265358979324_rk
+real(rk), parameter :: TWOPI = 2.0_rk*PI
+real(rk), parameter :: PIBY2 = 0.5_rk*PI
+real(rk), parameter :: PI3BY2 = 1.5_rk*PI
+real(rk), parameter :: DEGRAD = 180.0_rk/PI
 
 ! Simulation Parameters
-real(rk), parameter :: MSUN = TWOPI*TWOPI
+real(rk), parameter :: MSUN = TWOPI**2
 real(rk), parameter :: MEARTH = 3.0e-6_rk*MSUN
 
 ! Symbolic names for binary output file contents

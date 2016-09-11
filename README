@@ -14,7 +14,6 @@ where the number of large massive bodies are less than 1000.
 This code requires the following to be installed: 
 Intel Fortran compiler v13+ or GNU Fortran compiler v4.8+
 GNU C compiler (Optional, for fxdr binary output library)
-bash (Optional)
 gnuplot (Optional)
 ImageMagick (Optional)
 ps2pdf (Optional)
@@ -26,6 +25,10 @@ Before compiling:
 
 - Update the value of SWIFT_HOME in Makefile.Defines with the correct location of this directory
 - Ensure the file test_read_only.xdr in the fxdr directory has read-only permissions
+- Set the stack size to be unlimited:
+  ulimit -s unlimited
+- It may be necessary to provide a larger OpenMP stack size:
+  export OMP_STACKSIZE=256m
 
 =============================================================================
 
@@ -35,6 +38,5 @@ To compile:
 
 To run the example:
 
-- Ensure a link to the programs and scripts in the bin directory exist
 - cd example; ./@run_swift
-- If gnuplot, imagemagick or ffmpeg are not installed, then comment out the last two lines
+- If gnuplot, ImageMagick or ffmpeg are not installed, then comment out the line with containing frame_symba

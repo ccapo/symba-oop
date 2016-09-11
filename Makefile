@@ -15,9 +15,6 @@
 #                (1) all     : builds modules, entire swift library, FXDR
 #                              library, swift drivers and tools
 #                (2) mod     : builds modules
-#                (3) lib     : builds entire swift library
-#                (4) libdir  : compiles local directory source and adds the
-#                              resulting objects to the swift library
 #                (5) fxdr    : builds FXDR library by invoking its makefile
 #                (6) drivers : builds swift drivers
 #                (7) tools   : builds swift tools
